@@ -1,0 +1,172 @@
+import { Translations } from "./cs";
+
+export const en: Translations = {
+    // Navigation & Settings
+    "nav.title": "Investio",
+    "nav.settings": "Settings",
+    "nav.privacy": "Toggle Privacy",
+    "nav.theme": "Toggle Theme",
+    "settings.provider": "Data Provider",
+    "settings.tolerance": "Tolerance Band",
+    "settings.mainCurrency": "Main Currency",
+    "settings.secondaryCurrency": "Secondary Currency",
+
+    // Bento Summary
+    "summary.totalValue": "Total Value",
+    "summary.today": "Today",
+    "summary.marketStatus": "Market Status",
+    "summary.lastUpdate": "Last Check",
+    "summary.notUpdated": "Not updated yet",
+    "summary.autoOn": "Auto-refresh ON",
+    "summary.autoOff": "Auto-refresh OFF",
+    "summary.refresh": "Refresh Data",
+    "summary.dataUpToDate": "Up to Date",
+    "summary.manual": "MANUAL",
+    "summary.auto": "AUTO",
+
+    // Main Dashboard
+    "dash.title": "Portfolio Overview",
+    "dash.subtitle": "Track performance and target allocation drift.",
+    "dash.btn.auto": "Auto",
+    "dash.btn.manual": "Manual",
+    "dash.btn.smartInvest": "Smart Invest",
+    "dash.btn.deposits": "Deposits",
+    "dash.btn.transactions": "Transactions",
+    "dash.btn.export": "CSV",
+    "dash.btn.shutdown": "Shutdown",
+
+    // Error & States
+    "state.loading": "Refreshing Data...",
+
+    // Assets List
+    "assets.held": "Held Assets",
+    "assets.addTicker": "Add Ticker",
+    "assets.rebalanceNeeded": "Rebalance Needed",
+    "assets.table.name": "Name & Ticker",
+    "assets.table.price": "Price",
+    "assets.table.shares": "Shares",
+    "assets.table.valueCzk": "Value (CZK)",
+    "assets.table.valueEur": "Value (EUR)",
+    "assets.table.alloc": "Allocation",
+    "assets.exchangeRate": "1 EUR Rate =",
+    "assets.colAsset": "ASSET",
+    "assets.colPrice": "PRICE / TODAY",
+    "assets.colShares": "SHARES",
+    "assets.colValue": "VALUE",
+    "assets.colAllocation": "ALLOCATION",
+    "assets.target": "Target:",
+    "assets.empty": "You are not tracking any assets yet. Add your first ticker.",
+    "assets.tickerSymbol": "Asset symbol",
+    "assets.tickerPlaceholder": "e.g. VWCE.DE or AAPL",
+    "assets.targetWeight": "Target portfolio weight (%)",
+    "assets.validating": "Validating...",
+    "assets.errorEmpty": "Ticker cannot be empty.",
+    "assets.errorWeight": "Enter a valid target weight in percent.",
+    "assets.errorServer": "Error communicating with server.",
+    "assets.errorValidation": "Failed to validate ticker.",
+
+    // Delete Modal
+    "delete.title": "Delete Asset",
+    "delete.warning": "This action is irreversible. The asset and its historical data will be removed from your portfolio.",
+    "delete.reason": "Reason for deletion",
+    "delete.optional": "(optional)",
+    "delete.placeholder": "e.g. Moved to ETFS, Profit taking...",
+    "delete.noReason": "No reason provided",
+
+    // Deposits Modal
+    "deposits.title": "Cash Deposits",
+    "deposits.total": "Total:",
+    "deposits.empty": "You have no recorded deposits yet.",
+    "deposits.delete": "Delete deposit",
+    "deposits.amountPlaceholder": "Amount (CZK)",
+    "deposits.datePlaceholder": "DD. MM. YYYY",
+    "deposits.notePlaceholder": "Deposit note...",
+    "deposits.defaultNote": "Deposit",
+
+    // Ghost Portfolio Modal
+    "ghost.title": "Ghost Portfolio",
+    "ghost.subtitle": "Virtual benchmark portfolio",
+    "ghost.name": "Name",
+    "ghost.namePlaceholder": "e.g. 100% S&P 500",
+    "ghost.allocation": "Allocation",
+    "ghost.tickerPlaceholder": "Ticker (e.g. ^GSPC)",
+    "ghost.totalWeight": "Total weight:",
+    "ghost.saveBtn": "Save Ghost Portfolio",
+    "ghost.errorEmpty": "Add at least one ticker with a weight.",
+    "ghost.errorSum": "Total weight must be 100% (currently",
+    "ghost.errorInvalid": "Invalid tickers:",
+    "ghost.verify": "Verify symbols on Yahoo Finance.",
+
+    // Transactions Modal
+    "tx.title": "Transactions",
+    "tx.records": "records",
+    "tx.avgCostLabel": "Average Cost Basis",
+    "tx.perShare": "/sh",
+    "tx.empty": "No transactions yet.",
+    "tx.buy": "Buy",
+    "tx.sell": "Sell",
+    "tx.buyBtn": "BUY",
+    "tx.sellBtn": "SELL",
+    "tx.pieces": "sh",
+    "tx.totalAmount": "Total cost",
+    "tx.pricePerShare": "Price per share",
+    "tx.sharesPlaceholder": "Shares count",
+    "tx.totalPlaceholder": "Total",
+    "tx.pricePlaceholder": "Price/sh",
+    "tx.noteOptional": "Note (optional)",
+    "tx.tickerPlaceholder": "Ticker...",
+
+    // Smart Invest Modal
+    "smart.title": "Smart Invest",
+    "smart.subtitle": "Optimal distribution of new deposits",
+    "smart.amountPlaceholder": "Enter amount",
+    "smart.recommended": "Recommended Buys",
+    "smart.target": "Target:",
+    "smart.balanced": "Portfolio is balanced, no need to rebalance.",
+
+    // Rebalance
+    "rebalance.title": "Portfolio Rebalance Required",
+    "rebalance.desc": "Some assets deviated from target weight by more than allowed",
+    "rebalance.descAppend": "Here is a suggested plan to reach target allocation:",
+    "rebalance.buy": "BUY",
+    "rebalance.sell": "SELL",
+
+    // History Chart
+    "history.title": "Portfolio History",
+    "history.subtitle": "Total value development over time (CZK)",
+    "history.tabValue": "Value",
+    "history.tabProfit": "Profit",
+
+    // Annual Report (Summary)
+    "report.title": "Summary Report",
+    "report.days": "Over {days} days of tracking",
+    "report.1w": "1 Week",
+    "report.1m": "1 Month",
+    "report.6m": "6 Months",
+    "report.1y": "1 Year",
+    "report.all": "All",
+    "report.custom": "Custom",
+    "report.invested": "Total Invested",
+    "report.currentValue": "Current Value",
+    "report.netProfit": "Net Profit/Loss",
+    "report.roi": "Return on Investment",
+    "report.volatility": "Volatility (Daily)",
+    "report.volatilityDesc": "Higher volatility indicates more aggressive price movements and higher risk.",
+
+    // Correlation Heatmap
+    "heatmap.title": "Correlation Matrix",
+    "heatmap.subtitle": "Asset diversification visualization",
+    "heatmap.high": "High correlation",
+    "heatmap.low": "Low",
+    "heatmap.negative": "Negative",
+
+    // Generic
+    "generic.save": "Save",
+    "generic.cancel": "Cancel",
+    "generic.delete": "Delete",
+    "generic.close": "Close",
+    "generic.amount": "Amount",
+    "generic.date": "Date",
+    "generic.note": "Note",
+    "generic.action": "Action",
+};

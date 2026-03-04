@@ -1,0 +1,172 @@
+export const cs = {
+    // Navigation & Settings
+    "nav.title": "Investio",
+    "nav.settings": "Nastavení",
+    "nav.privacy": "Skrýt investice",
+    "nav.theme": "Změnit vzhled",
+    "settings.provider": "Zdroj dat",
+    "settings.tolerance": "Toleranční pásmo",
+    "settings.mainCurrency": "Hlavní měna",
+    "settings.secondaryCurrency": "Sekundární měna",
+
+    // Bento Summary
+    "summary.totalValue": "Celková hodnota",
+    "summary.today": "Za dnešek",
+    "summary.marketStatus": "Status trhu",
+    "summary.lastUpdate": "Poslední kontrola",
+    "summary.notUpdated": "Zatím neaktualizováno",
+    "summary.autoOn": "Auto-refresh zapnut",
+    "summary.autoOff": "Auto-refresh vypnut",
+    "summary.refresh": "Obnovit data",
+    "summary.dataUpToDate": "Data aktuální",
+    "summary.manual": "MANUAL",
+    "summary.auto": "AUTO",
+
+    // Main Dashboard
+    "dash.title": "Přehled portfolia",
+    "dash.subtitle": "Sledujte výkonnost a odchylky od cílové alokace.",
+    "dash.btn.auto": "Auto",
+    "dash.btn.manual": "Manual",
+    "dash.btn.smartInvest": "Smart Invest",
+    "dash.btn.deposits": "Vklady",
+    "dash.btn.transactions": "Transakce",
+    "dash.btn.export": "CSV",
+    "dash.btn.shutdown": "Vypnout",
+
+    // Error & States
+    "state.loading": "Obnovování Data...",
+
+    // Assets List
+    "assets.held": "Držená aktiva",
+    "assets.addTicker": "Přidat Ticker",
+    "assets.rebalanceNeeded": "Nutná rebalance",
+    "assets.table.name": "Název a Ticker",
+    "assets.table.price": "Cena",
+    "assets.table.shares": "Kusy",
+    "assets.table.valueCzk": "Hodnota (CZK)",
+    "assets.table.valueEur": "Hodnota (EUR)",
+    "assets.table.alloc": "Alokace",
+    "assets.exchangeRate": "Kurz 1 EUR =",
+    "assets.colAsset": "AKTIVUM",
+    "assets.colPrice": "PRICE / TODAY",
+    "assets.colShares": "SHARES",
+    "assets.colValue": "VALUE",
+    "assets.colAllocation": "ALLOCATION",
+    "assets.target": "Cíl:",
+    "assets.empty": "Zatím nesledujete žádná aktiva. Přidejte první ticker.",
+    "assets.tickerSymbol": "Symbol aktiva",
+    "assets.tickerPlaceholder": "např. VWCE.DE nebo AAPL",
+    "assets.targetWeight": "Cílová váha v portfoliu (%)",
+    "assets.validating": "Ověřuji...",
+    "assets.errorEmpty": "Ticker nesmí být prázdný.",
+    "assets.errorWeight": "Zadejte platnou cílovou váhu v procentech.",
+    "assets.errorServer": "Chyba při komunikaci se serverem.",
+    "assets.errorValidation": "Nepodařilo se ověřit ticker.",
+
+    // Delete Modal
+    "delete.title": "Smazat aktivum",
+    "delete.warning": "Tato akce je nevratná. Aktivum a jeho historická data budou odstraněna z portfolia.",
+    "delete.reason": "Důvod smazání",
+    "delete.optional": "(volitelné)",
+    "delete.placeholder": "např. Přesunuto do ETF, Realizace zisku...",
+    "delete.noReason": "Nezadán důvod",
+
+    // Deposits Modal
+    "deposits.title": "Peněžní vklady",
+    "deposits.total": "Celkem:",
+    "deposits.empty": "Zatím neevidujete žádné vklady.",
+    "deposits.delete": "Smazat vklad",
+    "deposits.amountPlaceholder": "Částka (Kč)",
+    "deposits.datePlaceholder": "DD. MM. YYYY",
+    "deposits.notePlaceholder": "Poznámka k vkladu...",
+    "deposits.defaultNote": "Vklad",
+
+    // Ghost Portfolio Modal
+    "ghost.title": "Ghost Portfolio",
+    "ghost.subtitle": "Virtuální porovnávací portfolio",
+    "ghost.name": "Název",
+    "ghost.namePlaceholder": "např. 100% S&P 500",
+    "ghost.allocation": "Alokace",
+    "ghost.tickerPlaceholder": "Ticker (např. ^GSPC)",
+    "ghost.totalWeight": "Součet vah:",
+    "ghost.saveBtn": "Uložit Ghost Portfolio",
+    "ghost.errorEmpty": "Přidejte alespoň jeden ticker s váhou.",
+    "ghost.errorSum": "Součet vah musí být 100% (aktuálně",
+    "ghost.errorInvalid": "Neplatné tickery:",
+    "ghost.verify": "Ověřte symboly na Yahoo Finance.",
+
+    // Transactions Modal
+    "tx.title": "Transakce",
+    "tx.records": "záznamů",
+    "tx.avgCostLabel": "Průměrná nákupní cena",
+    "tx.perShare": "/ks",
+    "tx.empty": "Zatím žádné transakce.",
+    "tx.buy": "Nákup",
+    "tx.sell": "Prodej",
+    "tx.buyBtn": "NÁKUP",
+    "tx.sellBtn": "PRODEJ",
+    "tx.pieces": "ks",
+    "tx.totalAmount": "Celková částka",
+    "tx.pricePerShare": "Cena za kus",
+    "tx.sharesPlaceholder": "Počet ks",
+    "tx.totalPlaceholder": "Celkem",
+    "tx.pricePlaceholder": "Cena/ks",
+    "tx.noteOptional": "Poznámka (volitelné)",
+    "tx.tickerPlaceholder": "Ticker...",
+
+    // Smart Invest Modal
+    "smart.title": "Smart Invest",
+    "smart.subtitle": "Optimální rozdělení nového vkladu",
+    "smart.amountPlaceholder": "Zadejte částku",
+    "smart.recommended": "Doporučené nákupy",
+    "smart.target": "Cíl:",
+    "smart.balanced": "Portfolio je vyvážené, není potřeba rebalancovat.",
+
+    // Rebalance
+    "rebalance.title": "Nutná rebalance portfolia",
+    "rebalance.desc": "Některá aktiva se odchýlila od cílové váhy o více než povolených",
+    "rebalance.descAppend": "Zde je návrh transakcí pro návrat k cílovému rozložení:",
+    "rebalance.buy": "KOUPIT",
+    "rebalance.sell": "PRODAT",
+
+    // History Chart
+    "history.title": "Historie portfolia",
+    "history.subtitle": "Vývoj celkové hodnoty v čase (CZK)",
+    "history.tabValue": "Hodnota",
+    "history.tabProfit": "Zisk",
+
+    // Annual Report (Summary)
+    "report.title": "Souhrnná zpráva",
+    "report.days": "Za {days} dní sledování",
+    "report.1w": "1 Týden",
+    "report.1m": "1 Měsíc",
+    "report.6m": "6 Měsíců",
+    "report.1y": "1 Rok",
+    "report.all": "Vše",
+    "report.custom": "Vlastní",
+    "report.invested": "Celkem vloženo",
+    "report.currentValue": "Aktuální hodnota",
+    "report.netProfit": "Čistý zisk/ztráta",
+    "report.roi": "Zhodnocení",
+    "report.volatility": "Volatilita (denní)",
+    "report.volatilityDesc": "Vyšší volatilita značí agresivnější pohyby a vyšší riziko.",
+
+    // Correlation Heatmap
+    "heatmap.title": "Korelační matice",
+    "heatmap.subtitle": "Vizualizace diverzifikace aktiv",
+    "heatmap.high": "Vysoká korelace",
+    "heatmap.low": "Nízká",
+    "heatmap.negative": "Negativní",
+
+    // Generic
+    "generic.save": "Uložit",
+    "generic.cancel": "Zrušit",
+    "generic.delete": "Smazat",
+    "generic.close": "Zavřít",
+    "generic.amount": "Částka",
+    "generic.date": "Datum",
+    "generic.note": "Poznámka",
+    "generic.action": "Akce",
+};
+
+export type Translations = typeof cs;
