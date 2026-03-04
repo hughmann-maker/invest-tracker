@@ -154,8 +154,8 @@ The app supports multiple market data providers. Default is Yahoo Finance (no AP
 | Provider | API Key Required | Refresh Interval |
 |----------|-----------------|-------------------|
 | Yahoo Finance | ❌ No | 60 seconds |
-| Finnhub | ✅ Yes | 60 seconds |
-| Tiingo | ✅ Yes | 5 minutes |
+| Finnhub (disabled) | ✅ Yes | 60 seconds |
+| Tiingo (disabled) | ✅ Yes | 5 minutes |
 | ECB | ❌ No | 1 hour (exchange rates only) |
 
 To use Finnhub or Tiingo, copy `.env.example` to `.env` and add your API key.
