@@ -28,7 +28,7 @@ Designed to run on a **Raspberry Pi** or any local machine as your personal, pri
 - **Delete transactions** — remove incorrect entries (shares are reverted)
 
 ### Portfolio History & Charts
-- **Historical value chart** — portfolio value over time in CZK with interactive Recharts graph
+- **Historical value chart** — portfolio value over time in selected currency with interactive Recharts graph
 - **Invested vs. Market Value** — see how your portfolio grows compared to what you put in
 - **S&P 500 Benchmark** — compare your performance against the market
 - **Automatic backfill** — historical data is fetched from Yahoo Finance API for gap-filling
@@ -85,7 +85,7 @@ Designed to run on a **Raspberry Pi** or any local machine as your personal, pri
 ### Quick Start (Windows)
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/invest-tracker.git
+git clone https://github.com/hughmann-maker/invest-tracker.git
 cd invest-tracker
 start.bat
 ```
@@ -93,7 +93,7 @@ start.bat
 ### Quick Start (Linux / Raspberry Pi / macOS)
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/invest-tracker.git
+git clone https://github.com/hughmann-maker/invest-tracker.git
 cd invest-tracker
 chmod +x start.sh
 ./start.sh
