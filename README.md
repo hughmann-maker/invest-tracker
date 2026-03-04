@@ -37,7 +37,7 @@ Designed to run on a **Raspberry Pi** or any local machine as your personal, pri
 - **Track cash deposits** — log money added to your brokerage account with dates and notes
 - **Delete deposits** — remove incorrect entries
 
-### Ghost Portfolio
+### Ghost Portfolio (untested)
 - **What-if analysis** — create a hypothetical portfolio to compare against your real one
 - **Side-by-side chart comparison** — see how a different allocation would have performed
 
