@@ -728,7 +728,7 @@ export default function DashboardPage() {
   const handleDeleteDeposit = (id: string) => {
     const updated = deposits.filter(d => d.id !== id);
     setDeposits(updated);
-    if (activePortfolioId) localStorage.setItem(lsKey(activePortfolioId, "deposits"), JSON.stringify(updated));
+    try { if (activePortfolioId) localStorage.setItem(lsKey(activePortfolioId, "deposits"), JSON.stringify(updated)); } catch (e) { }
     saveToStorage(assets, historyData, updated, transactions, exchangeRates, historicalRates);
   };
 
@@ -757,7 +757,7 @@ export default function DashboardPage() {
     };
     const updatedTx = [...transactions, newTx];
     setTransactions(updatedTx);
-    if (activePortfolioId) localStorage.setItem(lsKey(activePortfolioId, "transactions"), JSON.stringify(updatedTx));
+    try { if (activePortfolioId) localStorage.setItem(lsKey(activePortfolioId, "transactions"), JSON.stringify(updatedTx)); } catch (e) { }
 
     // Clear history so that it gets recalculated taking into account the new past transaction
     setHistoryData([]);
@@ -795,7 +795,7 @@ export default function DashboardPage() {
     // 2. Remove transaction
     const updatedTx = transactions.filter(t => t.id !== id);
     setTransactions(updatedTx);
-    if (activePortfolioId) localStorage.setItem(lsKey(activePortfolioId, "transactions"), JSON.stringify(updatedTx));
+    try { if (activePortfolioId) localStorage.setItem(lsKey(activePortfolioId, "transactions"), JSON.stringify(updatedTx)); } catch (e) { }
 
     // Clear history so that it gets recalculated taking into account the deleted transaction
     setHistoryData([]);
