@@ -753,7 +753,7 @@ export default function DashboardPage() {
     // 2. Add transaction
     const newTx: Transaction = {
       ...tx,
-      id: crypto.randomUUID(),
+      id: generateId(),
     };
     const updatedTx = [...transactions, newTx];
     setTransactions(updatedTx);

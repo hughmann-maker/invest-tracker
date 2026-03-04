@@ -6,6 +6,13 @@ import { Ghost, X, Plus, Trash2, Loader2, Check } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
+const generateId = (): string => {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+        return crypto.randomUUID();
+    }
+    return Date.now().toString(36) + Math.random().toString(36).substring(2, 10);
+};
+
 export interface GhostAllocation {
     ticker: string;
     weight: number; // 0-1
@@ -103,7 +110,7 @@ export function GhostPortfolioModal({ isOpen, onClose, ghostPortfolio, onSave, o
 
             // Save
             const portfolio: GhostPortfolio = {
-                id: ghostPortfolio?.id || crypto.randomUUID(),
+                id: ghostPortfolio?.id || generateId(),
                 name: cleanName,
                 allocations,
             };
