@@ -5,10 +5,16 @@ echo "Checking dependencies..."
 npm install --no-audit
 
 echo "Freeing port 3000 (killing previous process if running)..."
-PORT_PID=$(lsof -ti :3000 2>/dev/null)
-if [ -n "$PORT_PID" ]; then
-    echo "Found process $PORT_PID on port 3000, terminating..."
-    kill -9 $PORT_PID 2>/dev/null
+if command -v fuser &> /dev/null; then
+    fuser -k 3000/tcp 2>/dev/null && echo "Killed process on port 3000."
+elif command -v lsof &> /dev/null; then
+    PORT_PID=$(lsof -ti :3000 2>/dev/null)
+    if [ -n "$PORT_PID" ]; then
+        echo "Found process $PORT_PID on port 3000, terminating..."
+        kill -9 $PORT_PID 2>/dev/null
+    fi
+else
+    echo "Warning: neither fuser nor lsof found, cannot free port automatically."
 fi
 
 # Delete old lock file if it exists
