@@ -15,7 +15,7 @@ Designed to run on a **Raspberry Pi** or any local machine as your personal, pri
 ### Asset Management
 - **Add Ticker** — add any stock/ETF by its Yahoo Finance ticker symbol (e.g. `SXR8.DE`, `AAPL`)
 - **Set Target Weights** — define target allocation percentages for each asset
-- **Edit Shares** — manually set the number of shares you hold
+- **Edit Shares** — manually set the number of shares you hold (optional)
 - **Delete Ticker** — remove assets with a reason log for audit trail
 
 ### Rebalancing
