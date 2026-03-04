@@ -171,30 +171,100 @@ Configurable in the UI — default is 5%. When any asset's actual weight deviate
 ### Header Bar
 | Element | Description |
 |---------|-------------|
+| **Investio** logo | App name with version badge |
 | Portfolio Switcher | Dropdown to switch between portfolios, create new, rename, or delete |
-| 🔄 Refresh | Manually refresh all prices |
+| � Privacy Mode | Blur sensitive financial values |
+| 🌙/☀️ Theme | Toggle dark/light mode |
 | Language Toggle | Switch between Czech (CZ) and English (EN) |
+| ⚙️ Settings | Data provider, currencies, rebalance tolerance |
 
-### Action Buttons
-| Button | Icon | Description |
-|--------|------|-------------|
-| **Add Ticker** | `+` | Add a new stock/ETF by ticker symbol and set its target weight |
-| **Smart Invest** | 🧠 | Calculate optimal share purchases for a given investment amount |
-| **Transactions** | 📋 | View, add, and delete buy/sell transactions |
-| **Deposits** | 💰 | Track cash deposits to your brokerage |
-| **Export** | ⬇️ | Export portfolio data |
-| **Ghost Portfolio** | 👻 | Create a hypothetical portfolio for comparison |
-| **Auto-Refresh** | ⚡ | Toggle automatic price refresh on/off |
+### Action Buttons (⋯ Menu)
+| Button | Description |
+|--------|-------------|
+| **🧠 Smart Invest** | Calculate optimal share purchases for a given investment amount |
+| **💰 Deposits** | Track cash deposits to your brokerage |
+| **📋 Transactions** | View, add, and delete buy/sell transactions |
+| **👻 Ghost Portfolio** | Create a hypothetical portfolio for comparison |
+| **⬇️ Export CSV** | Export portfolio data as CSV |
+| **📥 Backup Portfolio** | Download current portfolio as JSON file |
+| **📤 Restore Backup** | Upload a previously saved JSON backup |
+| **⏻ Shutdown** | Stop the server (for Raspberry Pi) |
 
 ### Asset Table
+- Click **+ Add Ticker** to add a new stock/ETF by ticker symbol
 - Click the **shares count** to edit the number of shares
 - Click the **target %** to change target allocation
 - Click the **🗑 delete icon** to remove an asset (with reason prompt)
+- Use **↑↓ arrows** to reorder assets
 
 ### Charts Section
 - **Portfolio Value** — historical value chart with zoom and time range selection
 - **Correlation Heatmap** — asset correlation visualization
 - **Annual Report** — yearly performance breakdown
+
+---
+
+## 🤖 AI Agent API
+
+The app exposes a read-only API endpoint for AI agents and external tools to retrieve portfolio data.
+
+### `GET /api/agent`
+
+Returns all portfolios with live prices, transactions, deposits, history, correlation matrix, and exchange rates.
+
+**Example:**
+```bash
+curl http://localhost:3000/api/agent | jq
+```
+
+### `GET /api/agent?format=csv`
+
+Returns the same data as a downloadable CSV file.
+
+**Response Schema (JSON):**
+```json
+{
+  "portfolios": [
+    {
+      "id": "portfolio-id",
+      "name": "Portfolio Name",
+      "portfolio": {
+        "assets": [
+          {
+            "ticker": "SXR8.DE",
+            "name": "iShares Core S&P 500",
+            "shares": 10,
+            "price": 550.20,
+            "currency": "EUR",
+            "valueCzk": 137550.00,
+            "valueEur": 5502.00,
+            "targetWeight": 0.70,
+            "actualWeight": 0.68,
+            "dailyChangePercent": 0.45
+          }
+        ],
+        "totalValueCzk": 202279.50,
+        "totalValueEur": 8091.18,
+        "totalInvestedCzk": 180000.00,
+        "profitCzk": 22279.50,
+        "profitPercent": 12.38
+      },
+      "transactions": [...],
+      "deposits": [...],
+      "history": [...],
+      "correlationMatrix": { "tickers": [...], "correlations": [[...]] },
+      "exchangeRates": { "EUR": 25.0, "USD": 23.0 }
+    }
+  ],
+  "meta": {
+    "totalPortfolios": 1,
+    "generatedAt": "2026-03-04T15:00:00.000Z",
+    "apiVersion": "2.0"
+  }
+}
+```
+
+> **Note:** The API is read-only and does not require authentication. It is intended for local network use only.
 
 ---
 
@@ -251,6 +321,41 @@ The app will be accessible at `http://<raspberry-pi-ip>:3000` from any device on
 
 ---
 
+## 📋 Changelog
+
+### v0.2.0-beta (2026-03-04)
+**New Features:**
+- 📥 **Backup portfolio** — download current portfolio data as a JSON file
+- 📤 **Restore from backup** — upload a previously saved JSON backup to restore portfolio data
+- 🤖 **AI Agent API docs** — documented the `/api/agent` endpoint in README
+- 🏷️ **Version number** — app version displayed in the navbar (`v0.2.0-beta`)
+
+**Bug Fixes:**
+- 🐛 Fixed mobile menu being hidden/clipped on narrow screens — title now truncates properly
+- � Fixed transactions not saving on mobile when tapping the + button (iOS Safari / mobile browsers)
+
+**Improvements:**
+- 📖 Comprehensive README with full feature docs, UI guide, and Raspberry Pi setup
+- 📋 Added changelog section for tracking updates
+
+### v0.1.0 (2026-03-03)
+- 🎉 Initial release
+- Portfolio dashboard with real-time Yahoo Finance prices
+- Multi-portfolio support (create, switch, rename, delete)
+- Transaction tracking (buy/sell with automatic share updates)
+- Deposit tracking
+- Historical value chart with S&P 500 benchmark
+- Smart Invest rebalancing calculator
+- Ghost portfolio what-if analysis
+- Annual report & correlation heatmap
+- CSV export & AI Agent API
+- Czech & English localization
+- Privacy mode & dark/light theme
+- `start.bat` (Windows) and `start.sh` (Raspberry Pi/Linux)
+
+---
+
 ## 📄 License
 
-This project is for personal use.
+This project is licensed under the [GNU Affero General Public License v3.0](LICENSE).
+

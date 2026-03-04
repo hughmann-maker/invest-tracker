@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { BentoSummary } from "@/components/dashboard/BentoSummary";
 import { AssetsList, type Asset } from "@/components/dashboard/AssetsList";
+import { useRef } from "react";
 import { RebalanceAlert } from "@/components/dashboard/RebalanceAlert";
 import { HistoryChart } from "@/components/dashboard/HistoryChart";
 import { AddTickerModal } from "@/components/dashboard/AddTickerModal";
@@ -16,7 +17,7 @@ import { CorrelationHeatmap } from "@/components/dashboard/CorrelationHeatmap";
 import { GhostPortfolioModal, type GhostPortfolio } from "@/components/dashboard/GhostPortfolioModal";
 import { PortfolioSwitcher } from "@/components/dashboard/PortfolioSwitcher";
 import { CreatePortfolioModal } from "@/components/dashboard/CreatePortfolioModal";
-import { Wallet, Brain, RefreshCcw, Receipt, Download, Ghost, Power, MoreHorizontal, Briefcase } from "lucide-react";
+import { Wallet, Brain, RefreshCcw, Receipt, Download, Upload, Ghost, Power, MoreHorizontal, Briefcase, HardDriveDownload, HardDriveUpload } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
@@ -135,6 +136,7 @@ export default function DashboardPage() {
   const [isSmartInvestOpen, setIsSmartInvestOpen] = useState(false);
   const [isTransactionsOpen, setIsTransactionsOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const restoreInputRef = useRef<HTMLInputElement>(null);
 
   const [hasLoaded, setHasLoaded] = useState(false);
   const [deposits, setDeposits] = useState<Deposit[]>([]);
@@ -837,6 +839,58 @@ export default function DashboardPage() {
     }
   };
 
+  // Backup: download current portfolio as JSON
+  const handleBackupDownload = async () => {
+    if (!activePortfolioId) return;
+    try {
+      const res = await fetch(`/api/storage?portfolio=${activePortfolioId}`, { cache: "no-store" });
+      if (!res.ok) throw new Error("Backup fetch failed");
+      const { data } = await res.json();
+      const portfolioName = portfolioList.find(p => p.id === activePortfolioId)?.name || activePortfolioId;
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${portfolioName.replace(/[^a-zA-Z0-9-_ěščřžýáíéúůďťňĚŠČŘŽÝÁÍÉÚŮĎŤŇ ]/g, "_")}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Backup download error:", err);
+    }
+  };
+
+  // Restore: upload JSON file into current portfolio
+  const handleRestoreUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !activePortfolioId) return;
+    const reader = new FileReader();
+    reader.onload = async (ev) => {
+      try {
+        const data = JSON.parse(ev.target?.result as string);
+        if (!data.assets || !Array.isArray(data.assets)) {
+          alert(language === "cs" ? "Neplatný soubor zálohy — chybí pole 'assets'." : "Invalid backup file — missing 'assets' array.");
+          return;
+        }
+        if (!confirm(language === "cs"
+          ? `Opravdu chcete obnovit portfolio ze zálohy? Aktuální data budou přepsána.`
+          : `Are you sure you want to restore from backup? Current data will be overwritten.`
+        )) return;
+        await fetch(`/api/storage?portfolio=${activePortfolioId}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        await loadPortfolioData(activePortfolioId);
+      } catch (err) {
+        console.error("Restore error:", err);
+        alert(language === "cs" ? "Chyba při obnově zálohy." : "Error restoring backup.");
+      }
+    };
+    reader.readAsText(file);
+    // Reset input so user can re-upload the same file
+    e.target.value = "";
+  };
+
   // Ghost portfolio is loaded inside loadPortfolioData; this useEffect re-triggers fetch
   useEffect(() => {
     if (activePortfolioId) {
@@ -1034,10 +1088,13 @@ export default function DashboardPage() {
         localStorage.setItem("investice_secondary_currency", c);
       }}
     >
+      {/* Hidden file input for restore */}
+      <input ref={restoreInputRef} type="file" accept=".json" onChange={handleRestoreUpload} className="hidden" />
+
       <div className="flex flex-col gap-2 mb-8 relative">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 whitespace-nowrap">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 truncate">
               {t("dash.title")}
             </h1>
             {portfolioList.length > 0 && (
@@ -1053,7 +1110,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Menu Toggle Button */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             {isLoading && <span className="text-[10px] font-medium bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded-full animate-pulse">{t("state.loading")}</span>}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -1116,6 +1173,26 @@ export default function DashboardPage() {
               <Download size={14} />
               <span>{t("dash.btn.export")}</span>
             </button>
+
+            {/* Backup & Restore */}
+            <button
+              onClick={() => { handleBackupDownload(); setIsMobileMenuOpen(false); }}
+              className="flex items-center justify-start gap-3 px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 text-zinc-600 dark:text-zinc-400 text-sm font-semibold hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors border border-transparent whitespace-nowrap"
+            >
+              <HardDriveDownload size={14} />
+              <span>{language === "cs" ? "Záloha portfolia" : "Backup Portfolio"}</span>
+            </button>
+            <button
+              onClick={() => { restoreInputRef.current?.click(); setIsMobileMenuOpen(false); }}
+              className="flex items-center justify-start gap-3 px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 text-zinc-600 dark:text-zinc-400 text-sm font-semibold hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors border border-transparent whitespace-nowrap"
+            >
+              <HardDriveUpload size={14} />
+              <span>{language === "cs" ? "Obnovit ze zálohy" : "Restore Backup"}</span>
+            </button>
+
+            {/* Divider */}
+            <div className="w-full h-px bg-zinc-200 dark:bg-zinc-700/50 my-1"></div>
+
             <button
               onClick={() => { handleShutdown(); setIsMobileMenuOpen(false); }}
               className="flex items-center justify-start gap-3 px-4 py-2.5 rounded-xl bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-sm font-semibold hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors border border-transparent whitespace-nowrap"

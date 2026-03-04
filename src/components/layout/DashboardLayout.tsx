@@ -85,6 +85,7 @@ export function DashboardLayout({ children, dataProvider, onProviderChange, reba
                                 <TrendingUp size={20} strokeWidth={2.5} />
                             </div>
                             <span className="text-xl font-bold tracking-tight">Investio</span>
+                            <span className="text-[10px] font-medium text-zinc-400 dark:text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded-md leading-none self-center">v0.2.0-beta</span>
                         </div>
 
                         <div className="flex items-center gap-1">

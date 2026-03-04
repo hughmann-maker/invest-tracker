@@ -37,8 +37,8 @@ export function TransactionModal({ isOpen, onClose, transactions, onAddTransacti
     const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
     const [note, setNote] = useState("");
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSubmit = (e?: React.FormEvent | React.MouseEvent) => {
+        if (e) e.preventDefault();
         const numShares = parseFloat(shares.replace(",", "."));
         const numPrice = parseFloat(price.replace(",", "."));
         if (!ticker || isNaN(numShares) || numShares <= 0 || isNaN(numPrice) || numPrice <= 0) return;
@@ -222,7 +222,7 @@ export function TransactionModal({ isOpen, onClose, transactions, onAddTransacti
                                     </div>
                                     <div className="flex gap-2">
                                         <input type="text" value={note} onChange={(e) => setNote(e.target.value)} placeholder={t("tx.noteOptional")} className="flex-1 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2.5 text-sm font-medium text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500 min-w-0" />
-                                        <button type="submit" disabled={!ticker || !shares || !price || !date} className="flex items-center justify-center rounded-xl bg-orange-600 px-6 sm:px-4 py-2.5 text-white hover:bg-orange-700 transition-colors disabled:opacity-50 shrink-0">
+                                        <button type="button" onClick={handleSubmit} disabled={!ticker || !shares || !price || !date} className="flex items-center justify-center rounded-xl bg-orange-600 px-6 sm:px-4 py-2.5 text-white hover:bg-orange-700 transition-colors disabled:opacity-50 shrink-0">
                                             <Plus size={18} />
                                         </button>
                                     </div>
