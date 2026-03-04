@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 import "./globals.css";
@@ -13,13 +13,17 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: "#8b5cf6",
+};
+
 export const metadata: Metadata = {
   title: "Investio | Portfolio Tracker",
   description: "Moderní sledování a rebalancing portfolia.",
   manifest: "/manifest.json",
-  other: {
-    "theme-color": "#8b5cf6",
-  },
 };
 
 export default function RootLayout({
