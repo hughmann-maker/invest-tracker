@@ -422,11 +422,20 @@ export default function DashboardPage() {
     // Pokud existingHistory nemáme, stahujeme od první transakce nebo vkladu, jinak defaultně před měsícem.
     let startDateToFetch = new Date();
     startDateToFetch.setMonth(startDateToFetch.getMonth() - 1); // default 1 month ago
+    let isRebuildingMissingAssets = false;
 
     if (existingHistory.length > 0) {
-      const lastEntry = existingHistory[existingHistory.length - 1];
-      startDateToFetch = parseCzDate(lastEntry.date);
-      startDateToFetch.setDate(startDateToFetch.getDate() + 1); // start tomorrow from last entry
+      // Check if we need to retroactively backfill missing `assetsCzk` for older history
+      const firstMissingAssets = existingHistory.find((h: any) => !h.assetsCzk || Object.keys(h.assetsCzk).length === 0);
+      
+      if (firstMissingAssets) {
+        startDateToFetch = parseCzDate(firstMissingAssets.date);
+        isRebuildingMissingAssets = true;
+      } else {
+        const lastEntry = existingHistory[existingHistory.length - 1];
+        startDateToFetch = parseCzDate(lastEntry.date);
+        startDateToFetch.setDate(startDateToFetch.getDate() + 1); // start tomorrow from last entry
+      }
     } else {
       let earliestTime = Date.now();
       currentTransactions.forEach(t => {
@@ -472,6 +481,7 @@ export default function DashboardPage() {
 
       const lastKnownPrices: Record<string, number> = {};
       const newEntries: any[] = [];
+      const pricesByDate = new Map<string, Record<string, number>>();
 
       days.forEach((day: any) => {
         const dayDate = parseCzDate(day.date).getTime();
@@ -481,6 +491,9 @@ export default function DashboardPage() {
         Object.entries(prices).forEach(([tick, p]) => {
           if (p > 0) lastKnownPrices[tick] = p;
         });
+
+        // Store for retroactive repairs of weekend snapshots
+        pricesByDate.set(day.date, { ...lastKnownPrices });
 
         // Only create history entry if we are >= targetStartDate and it's not already in existingHistory
         if (dayDate >= targetStartDate.getTime() && !existingHistory.find((h: any) => h.date === day.date)) {
@@ -538,7 +551,49 @@ export default function DashboardPage() {
         }
       });
 
-      if (newEntries.length === 0) return;
+      let retroUpdated = false;
+      if (isRebuildingMissingAssets) {
+         let currentKnownPrices: Record<string, number> = {};
+         for (let i = 0; i < existingHistory.length; i++) {
+             const h = existingHistory[i];
+             // Keep advancing our known prices timeline
+             if (pricesByDate.has(h.date)) {
+                 currentKnownPrices = pricesByDate.get(h.date)!;
+             }
+             
+             if (!h.assetsCzk || Object.keys(h.assetsCzk).length === 0) {
+                 const hDate = parseCzDate(h.date).getTime();
+                 const assetsCzk: Record<string, number> = {};
+                 
+                 tickers.forEach(ticker => {
+                    if (ticker === "^GSPC" || ticker === "EURCZK=X" || ticker === "USDCZK=X") return;
+                    const priceToUse = currentKnownPrices[ticker] || 0;
+                    if (priceToUse === 0) return;
+                    
+                    let sharesOnDay = 0;
+                    currentTransactions.forEach(t => {
+                      if (parseCzDate(t.date).getTime() <= hDate && t.ticker === ticker) {
+                        sharesOnDay += t.type === "BUY" ? t.shares : -t.shares;
+                      }
+                    });
+                    sharesOnDay = Math.max(0, sharesOnDay);
+                    
+                    if (sharesOnDay > 0) {
+                      const isUsd = tickerCurrency[ticker] === "USD";
+                      const exUSD = currentRates[h.date]?.USD || currentKnownPrices["USDCZK=X"] || exchangeRates.USD;
+                      const exEUR = currentRates[h.date]?.EUR || currentKnownPrices["EURCZK=X"] || exchangeRates.EUR;
+                      const rate = isUsd ? exUSD : exEUR;
+                      assetsCzk[ticker] = priceToUse * sharesOnDay * rate;
+                    }
+                 });
+                 
+                 h.assetsCzk = assetsCzk;
+                 retroUpdated = true;
+             }
+         }
+      }
+
+      if (newEntries.length === 0 && !retroUpdated) return;
 
       const updatedHistory = [...existingHistory, ...newEntries].sort((a, b) => {
         const pa = parseCzDate(a.date).getTime();
