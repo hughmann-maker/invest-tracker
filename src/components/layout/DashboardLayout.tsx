@@ -59,8 +59,10 @@ export function DashboardLayout({ children, dataProvider, onProviderChange, reba
     const toggleTheme = () => {
         if (isDark) {
             document.documentElement.classList.remove("dark");
+            localStorage.setItem("theme", "light");
         } else {
             document.documentElement.classList.add("dark");
+            localStorage.setItem("theme", "dark");
         }
         setIsDark(!isDark);
     };
@@ -68,8 +70,10 @@ export function DashboardLayout({ children, dataProvider, onProviderChange, reba
     const togglePrivacy = () => {
         if (isPrivacy) {
             document.documentElement.classList.remove("privacy-mode");
+            localStorage.setItem("privacy", "false");
         } else {
             document.documentElement.classList.add("privacy-mode");
+            localStorage.setItem("privacy", "true");
         }
         setIsPrivacy(!isPrivacy);
     };

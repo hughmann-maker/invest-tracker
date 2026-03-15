@@ -37,6 +37,22 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
+        <script
+          dangerouslySetInnerHTML={{
+             __html: `
+              try {
+                if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.documentElement.classList.add('dark');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                }
+                if (localStorage.privacy === 'true') {
+                  document.documentElement.classList.add('privacy-mode');
+                }
+              } catch (_) {}
+            `,
+          }}
+        />
         <LanguageProvider>
           {children}
         </LanguageProvider>
