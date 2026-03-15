@@ -85,9 +85,9 @@ export function HistoryChart({ data, ghostData, ghostName, mainCurrency = "CZK",
         const ghostAbsolute = ghostVal;
 
         const hoistedAssets: Record<string, number> = {};
-        if (d.assetsCzk && showAssets && activeTab === 'TOTAL') {
-            Object.entries(d.assetsCzk).forEach(([ticker, val]) => {
-                hoistedAssets[`asset_${ticker}`] = val / rate;
+        if (showAssets && activeTab === 'TOTAL') {
+            uniqueTickers.forEach(ticker => {
+                hoistedAssets[`asset_${ticker}`] = (d.assetsCzk?.[ticker] || 0) / rate;
             });
         }
 
@@ -335,6 +335,7 @@ export function HistoryChart({ data, ghostData, ghostName, mainCurrency = "CZK",
                                 name={ticker}
                                 animationDuration={800}
                                 strokeOpacity={0.8}
+                                connectNulls={true}
                             />
                         ))}
                     </AreaChart>
