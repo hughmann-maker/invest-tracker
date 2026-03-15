@@ -12,6 +12,11 @@ Designed to run on a **Raspberry Pi** or any local machine as your personal, pri
 - **Daily change tracking** — see absolute and percentage changes for each asset
 - **Bento-style summary cards** — total portfolio value, daily P&L, invested vs. current value
 
+### Market Overview (Přehled trhu)
+- **Live spot prices** — view live data for Gold, Silver, Platinum, and Palladium directly from Yahoo Finance commodity futures.
+- **Sparkline charts** — 30-day mini charts for each asset to quickly gauge trends.
+- **Auto-conversion** — converts commodity USD values into your preferred main currency.
+
 ### Asset Management
 - **Add Ticker** — add any stock/ETF by its Yahoo Finance ticker symbol (e.g. `SXR8.DE`, `AAPL`)
 - **Set Target Weights** — define target allocation percentages for each asset
@@ -29,9 +34,10 @@ Designed to run on a **Raspberry Pi** or any local machine as your personal, pri
 
 ### Portfolio History & Charts
 - **Historical value chart** — portfolio value over time in selected currency with interactive Recharts graph
+- **Individual asset breakdown** — toggle individual portfolio assets to see their separate historical lines within the main chart.
 - **Invested vs. Market Value** — see how your portfolio grows compared to what you put in
 - **S&P 500 Benchmark** — compare your performance against the market
-- **Automatic backfill** — historical data is fetched from Yahoo Finance API for gap-filling
+- **Automatic backfill & resilient dataset** — historical data is fetched from Yahoo Finance. Automatically repairs zeros from weekends and backfills missing asset-level data retroactively for older history records.
 
 ### Deposits
 - **Track cash deposits** — log money added to your brokerage account with dates and notes
@@ -322,6 +328,15 @@ The app will be accessible at `http://<raspberry-pi-ip>:3000` from any device on
 ---
 
 ## 📋 Changelog
+
+### v0.3.0 (2026-03-15)
+**New Features:**
+- 🌍 **Market Overview (Přehled trhu)** — new global view beside portfolios tracking Gold, Silver, Platinum, and Palladium with 30-day sparklines.
+- 📈 **Asset History Lines** — added toggle to "Show Assets" inside the History Chart, tracking the individual value of held assets over time.
+
+**Bug Fixes:**
+- 🐛 **Historical zero-drops** — completely solved an issue where weekend/holiday logic would create "0 CZK" portfolio snapshot days.
+- ♻️ **Retroactive asset history** — the app now automatically looks through old `portfolios.json` histories and computes the missing asset breakdown from old closing prices. 
 
 ### v0.2.0-beta (2026-03-04)
 **New Features:**
