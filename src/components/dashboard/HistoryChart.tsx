@@ -302,16 +302,18 @@ export function HistoryChart({ data, ghostData, ghostName, mainCurrency = "CZK",
                                 return null;
                             }}
                         />
-                        <Area
-                            type="monotone"
-                            dataKey="displayValue"
-                            stroke={strokeColor}
-                            strokeWidth={3}
-                            fillOpacity={1}
-                            fill="url(#colorDynamic)"
-                            animationDuration={800}
-                            name="Portfolio"
-                        />
+                        {(!showAssets || activeTab !== 'TOTAL') && (
+                            <Area
+                                type="monotone"
+                                dataKey="displayValue"
+                                stroke={strokeColor}
+                                strokeWidth={3}
+                                fillOpacity={1}
+                                fill="url(#colorDynamic)"
+                                animationDuration={800}
+                                name="Portfolio"
+                            />
+                        )}
                         {isGhostMode && hasGhostData && (
                             <Line
                                 type="monotone"
