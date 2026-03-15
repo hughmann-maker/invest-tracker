@@ -17,6 +17,7 @@ import { CorrelationHeatmap } from "@/components/dashboard/CorrelationHeatmap";
 import { GhostPortfolioModal, type GhostPortfolio } from "@/components/dashboard/GhostPortfolioModal";
 import { PortfolioSwitcher } from "@/components/dashboard/PortfolioSwitcher";
 import { CreatePortfolioModal } from "@/components/dashboard/CreatePortfolioModal";
+import { MarketOverview } from "@/components/dashboard/MarketOverview";
 import { Wallet, Brain, RefreshCcw, Receipt, Download, Upload, Ghost, Power, MoreHorizontal, Briefcase, HardDriveDownload, HardDriveUpload } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
@@ -167,6 +168,9 @@ export default function DashboardPage() {
   const [ghostPortfolio, setGhostPortfolio] = useState<GhostPortfolio | null>(null);
   const [ghostHistoryData, setGhostHistoryData] = useState<{ date: string; value: number }[]>([]);
 
+  // View State (Portfolio vs Market Overview)
+  const [activeView, setActiveView] = useState<"PORTFOLIO" | "MARKET">("PORTFOLIO");
+
   // Historical Exchange Rates
   const [historicalRates, setHistoricalRates] = useState<Record<string, { EUR: number, USD: number }>>({});
 
@@ -197,7 +201,16 @@ export default function DashboardPage() {
               };
             });
           }
-          if (data.history) initialHistory = data.history;
+          if (data.history) {
+            initialHistory = data.history;
+            // Repair script: fix any corrupted 0-value days in the saved history
+            for (let i = 1; i < initialHistory.length; i++) {
+              if (initialHistory[i].totalValueEur === 0 && initialHistory[i - 1].totalValueEur > 0) {
+                initialHistory[i].totalValueEur = initialHistory[i - 1].totalValueEur;
+                initialHistory[i].totalValueCzk = initialHistory[i - 1].totalValueCzk;
+              }
+            }
+          }
           if (data.deposits) initialDeposits = data.deposits;
           if (data.transactions) initialTransactions = data.transactions;
           if (data.historicalRates) {
@@ -226,7 +239,15 @@ export default function DashboardPage() {
         const savedAssetsStr = localStorage.getItem(lsKey(pfx, "assets"));
         if (savedAssetsStr) initialAssets = JSON.parse(savedAssetsStr).map((a: any) => ({ ...a, price: 0, dailyChange: 0, dailyChangePercent: 0, actualWeight: 0, currency: a.currency || "EUR", name: a.name || a.ticker }));
         const savedHistoryStr = localStorage.getItem(lsKey(pfx, "history"));
-        if (savedHistoryStr) initialHistory = JSON.parse(savedHistoryStr);
+        if (savedHistoryStr) {
+          initialHistory = JSON.parse(savedHistoryStr);
+          for (let i = 1; i < initialHistory.length; i++) {
+            if (initialHistory[i].totalValueEur === 0 && initialHistory[i - 1].totalValueEur > 0) {
+              initialHistory[i].totalValueEur = initialHistory[i - 1].totalValueEur;
+              initialHistory[i].totalValueCzk = initialHistory[i - 1].totalValueCzk;
+            }
+          }
+        }
         const savedDepositsStr = localStorage.getItem(lsKey(pfx, "deposits"));
         if (savedDepositsStr) initialDeposits = JSON.parse(savedDepositsStr);
         const savedTxStr = localStorage.getItem(lsKey(pfx, "transactions"));
@@ -418,6 +439,12 @@ export default function DashboardPage() {
       });
       startDateToFetch = new Date(earliestTime);
     }
+    
+    // We store the exact target start date needed for new entries
+    const targetStartDate = new Date(startDateToFetch);
+    
+    // Fetch from 7 days earlier to safely seed lastKnownPrices (handles back-to-back holidays)
+    startDateToFetch.setDate(startDateToFetch.getDate() - 7);
 
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
@@ -443,11 +470,20 @@ export default function DashboardPage() {
       const tickerCurrency: Record<string, "EUR" | "USD"> = {};
       currentAssets.forEach(a => tickerCurrency[a.ticker] = (a.currency as "EUR" | "USD") || "EUR");
 
-      const newEntries = days
-        .filter((day: any) => !existingHistory.find(h => h.date === day.date))
-        .map((day: any) => {
-          const dayDate = parseCzDate(day.date).getTime();
-          const prices = day.prices as Record<string, number>;
+      const lastKnownPrices: Record<string, number> = {};
+      const newEntries: any[] = [];
+
+      days.forEach((day: any) => {
+        const dayDate = parseCzDate(day.date).getTime();
+        const prices = day.prices as Record<string, number>;
+        
+        // Update known prices
+        Object.entries(prices).forEach(([tick, p]) => {
+          if (p > 0) lastKnownPrices[tick] = p;
+        });
+
+        // Only create history entry if we are >= targetStartDate and it's not already in existingHistory
+        if (dayDate >= targetStartDate.getTime() && !existingHistory.find((h: any) => h.date === day.date)) {
           const benchmarkValue = prices["^GSPC"] || undefined;
           const exchangeRateForDay = {
             EUR: prices["EURCZK=X"] || currentRates[day.date]?.EUR || exchangeRates.EUR,
@@ -456,10 +492,15 @@ export default function DashboardPage() {
 
           let totalValueCzk = 0;
           let totalValueForeign = 0;
+          const assetsCzk: Record<string, number> = {};
 
           // Výpočet portfolia k tomuto DNI - extrapolací transakcí
-          Object.entries(prices).forEach(([ticker, price]) => {
+          tickers.forEach(ticker => {
             if (ticker === "^GSPC" || ticker === "EURCZK=X" || ticker === "USDCZK=X") return;
+            
+            const priceToUse = lastKnownPrices[ticker] || 0;
+            if (priceToUse === 0) return; // Still no price available
+
             // Spočítáme kusy, které jsme drželi k tomuto dni
             let sharesOnDay = 0;
             currentTransactions.forEach(t => {
@@ -469,11 +510,15 @@ export default function DashboardPage() {
             });
             sharesOnDay = Math.max(0, sharesOnDay);
 
-            const isUsd = tickerCurrency[ticker] === "USD";
-            const rate = isUsd ? exchangeRateForDay.USD : exchangeRateForDay.EUR;
-
-            totalValueCzk += price * sharesOnDay * rate;
-            totalValueForeign += price * sharesOnDay;
+            if (sharesOnDay > 0) {
+              const isUsd = tickerCurrency[ticker] === "USD";
+              const rate = isUsd ? exchangeRateForDay.USD : exchangeRateForDay.EUR;
+              const assetVal = priceToUse * sharesOnDay * rate;
+              
+              totalValueCzk += assetVal;
+              totalValueForeign += priceToUse * sharesOnDay;
+              assetsCzk[ticker] = assetVal;
+            }
           });
 
           // Ukládáme historický měnový kurz z tohoto dne
@@ -482,14 +527,16 @@ export default function DashboardPage() {
           // Započteme investovanou částku VŽDY pouze z transakcí formou Cash-Flow a to přepočtem za historické ceny v době transakce
           const totalInvestedCzk = calculateNetInvestmentCzk(currentTransactions, dayDate, currentRates, exchangeRates);
 
-          return {
+          newEntries.push({
             date: day.date,
-            totalValueEur: totalValueForeign, // Used mostly as legacy UI value
+            totalValueEur: totalValueForeign,
             totalValueCzk,
             totalInvestedCzk,
             benchmarkValue,
-          };
-        });
+            assetsCzk,
+          });
+        }
+      });
 
       if (newEntries.length === 0) return;
 
@@ -498,6 +545,14 @@ export default function DashboardPage() {
         const pb = parseCzDate(b.date).getTime();
         return pa - pb;
       });
+
+      // Závěrečná pojistka (kdyby náhodou přeci jen probublala nějaká nula)
+      for (let i = 1; i < updatedHistory.length; i++) {
+        if (updatedHistory[i].totalValueEur === 0 && updatedHistory[i - 1].totalValueEur > 0) {
+          updatedHistory[i].totalValueEur = updatedHistory[i - 1].totalValueEur;
+          updatedHistory[i].totalValueCzk = updatedHistory[i - 1].totalValueCzk;
+        }
+      }
 
       // Update states
       setHistoricalRates({ ...currentRates });
@@ -593,16 +648,23 @@ export default function DashboardPage() {
 
     setHistoricalRates(newRates);
 
+    const assetsCzk: Record<string, number> = {};
+    assets.forEach(a => {
+      if (a.shares > 0 && a.price > 0) {
+        assetsCzk[a.ticker] = a.price * a.shares * (a.currency === "USD" ? exchangeRates.USD : exchangeRates.EUR);
+      }
+    });
+
     setHistoryData(prev => {
       const lastEntry = prev.length > 0 ? prev[prev.length - 1] : null;
       let newHistory = [...prev];
 
       if (lastEntry && lastEntry.date === todayStr) {
         // Update dneška, pokud už máme snapshot
-        newHistory[newHistory.length - 1] = { date: todayStr, totalValueEur: totalValueForeign, totalValueCzk, totalInvestedCzk };
+        newHistory[newHistory.length - 1] = { date: todayStr, totalValueEur: totalValueForeign, totalValueCzk, totalInvestedCzk, assetsCzk };
       } else {
         // Nový den
-        newHistory.push({ date: todayStr, totalValueEur: totalValueForeign, totalValueCzk, totalInvestedCzk });
+        newHistory.push({ date: todayStr, totalValueEur: totalValueForeign, totalValueCzk, totalInvestedCzk, assetsCzk });
       }
 
       if (activePortfolioId) {
@@ -1087,11 +1149,21 @@ export default function DashboardPage() {
         setSecondaryCurrency(c);
         localStorage.setItem("investice_secondary_currency", c);
       }}
+      activeView={activeView}
+      onViewChange={setActiveView}
     >
       {/* Hidden file input for restore */}
       <input ref={restoreInputRef} type="file" accept=".json" onChange={handleRestoreUpload} className="hidden" />
 
-      <div className="flex flex-col gap-2 mb-8 relative">
+      {activeView === "MARKET" ? (
+        <MarketOverview 
+          exchangeRates={exchangeRates} 
+          mainCurrency={mainCurrency} 
+          dataProvider={dataProvider} 
+        />
+      ) : (
+        <>
+          <div className="flex flex-col gap-2 mb-8 relative">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
             <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 truncate">
@@ -1390,6 +1462,8 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
+      )}
+        </>
       )}
     </DashboardLayout>
   );

@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { AreaChart, Area, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
-import { History, TrendingUp, Wallet, BarChart3 } from "lucide-react";
+import { AreaChart, Area, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { History, TrendingUp, Wallet, BarChart3, Layers } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
@@ -13,6 +13,7 @@ interface HistoryDataPoint {
     totalValueCzk: number;
     totalInvestedCzk?: number;
     benchmarkValue?: number;
+    assetsCzk?: Record<string, number>;
 }
 
 interface GhostDataPoint {
@@ -31,10 +32,20 @@ interface HistoryChartProps {
 export function HistoryChart({ data, ghostData, ghostName, mainCurrency = "CZK", exchangeRates = { EUR: 25.0, USD: 23.0 } }: HistoryChartProps) {
     const { t } = useLanguage();
     const [activeTab, setActiveTab] = useState<'TOTAL' | 'PROFIT' | 'GHOST'>('TOTAL');
+    const [showAssets, setShowAssets] = useState(false);
 
     if (!data || data.length === 0) {
         return null;
     }
+
+    const ASSET_COLORS = [
+        "#3b82f6", "#ef4444", "#10b981", "#f59e0b", 
+        "#ec4899", "#8b5cf6", "#14b8a6", "#f97316",
+        "#6366f1", "#06b6d4", "#84cc16", "#d946ef"
+    ];
+
+    // Get unique tickers from history
+    const uniqueTickers = Array.from(new Set(data.flatMap(d => Object.keys(d.assetsCzk || {}))));
 
     const formatCurrency = (val: number, currency: string) => {
         return new Intl.NumberFormat("cs-CZ", {
@@ -72,7 +83,15 @@ export function HistoryChart({ data, ghostData, ghostName, mainCurrency = "CZK",
             ? (ghostVal / firstGhost) * 100
             : undefined;
         const ghostAbsolute = ghostVal;
-        return { ...d, displayValue, ghostNormalized, ghostAbsolute };
+
+        const hoistedAssets: Record<string, number> = {};
+        if (d.assetsCzk && showAssets && activeTab === 'TOTAL') {
+            Object.entries(d.assetsCzk).forEach(([ticker, val]) => {
+                hoistedAssets[`asset_${ticker}`] = val / rate;
+            });
+        }
+
+        return { ...d, displayValue, ghostNormalized, ghostAbsolute, ...hoistedAssets };
     });
 
     const latestValue = chartData[chartData.length - 1]?.displayValue || 0;
@@ -103,43 +122,59 @@ export function HistoryChart({ data, ghostData, ghostName, mainCurrency = "CZK",
                 </div>
 
                 {/* Tabs */}
-                <div className="flex items-center p-1 rounded-2xl bg-zinc-100/80 dark:bg-zinc-950/50 border border-white/20 dark:border-zinc-800">
-                    <button
-                        onClick={() => setActiveTab('TOTAL')}
-                        className={cn(
-                            "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all",
-                            activeTab === 'TOTAL'
-                                ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm"
-                                : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
-                        )}
-                    >
-                        <Wallet size={16} />
-                        {t("history.tabValue")}
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('PROFIT')}
-                        className={cn(
-                            "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all",
-                            activeTab === 'PROFIT'
-                                ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm"
-                                : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
-                        )}
-                    >
-                        <TrendingUp size={16} />
-                        {t("history.tabProfit")}
-                    </button>
-                    {hasGhostData && (
+                <div className="flex gap-2 items-center flex-wrap">
+                    <div className="flex items-center p-1 rounded-2xl bg-zinc-100/80 dark:bg-zinc-950/50 border border-white/20 dark:border-zinc-800">
                         <button
-                            onClick={() => setActiveTab('GHOST')}
+                            onClick={() => setActiveTab('TOTAL')}
                             className={cn(
                                 "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all",
-                                activeTab === 'GHOST'
+                                activeTab === 'TOTAL'
                                     ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm"
                                     : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
                             )}
                         >
-                            <BarChart3 size={16} />
-                            vs {ghostName || 'Ghost'}
+                            <Wallet size={16} />
+                            {t("history.tabValue")}
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('PROFIT')}
+                            className={cn(
+                                "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all",
+                                activeTab === 'PROFIT'
+                                    ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm"
+                                    : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                            )}
+                        >
+                            <TrendingUp size={16} />
+                            {t("history.tabProfit")}
+                        </button>
+                        {hasGhostData && (
+                            <button
+                                onClick={() => setActiveTab('GHOST')}
+                                className={cn(
+                                    "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all",
+                                    activeTab === 'GHOST'
+                                        ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm"
+                                        : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                                )}
+                            >
+                                <BarChart3 size={16} />
+                                vs {ghostName || 'Ghost'}
+                            </button>
+                        )}
+                    </div>
+                    {activeTab === 'TOTAL' && uniqueTickers.length > 0 && (
+                        <button
+                            onClick={() => setShowAssets(!showAssets)}
+                            className={cn(
+                                "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all border",
+                                showAssets
+                                    ? "bg-zinc-800 text-white dark:bg-zinc-200 dark:text-zinc-900 border-transparent shadow-sm"
+                                    : "bg-white dark:bg-zinc-900/50 text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 border-zinc-200 dark:border-zinc-800"
+                            )}
+                        >
+                            <Layers size={16} />
+                            {showAssets ? 'Skrýt aktiva' : 'Zobrazit aktiva'}
                         </button>
                     )}
                 </div>
@@ -243,6 +278,21 @@ export function HistoryChart({ data, ghostData, ghostName, mainCurrency = "CZK",
                                                                 </span>
                                                             </div>
                                                         )}
+
+                                                        {showAssets && activeTab === 'TOTAL' && raw.assetsCzk && Object.entries(raw.assetsCzk).map(([tick, val]) => {
+                                                            const color = ASSET_COLORS[uniqueTickers.indexOf(tick) % ASSET_COLORS.length];
+                                                            return (
+                                                              <div key={tick} className="flex justify-between items-center gap-6 border-t border-zinc-200/50 dark:border-zinc-800/50 pt-1 mt-1">
+                                                                  <span className="text-xs text-zinc-500 flex items-center gap-1.5 font-semibold">
+                                                                      <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: color }}></span>
+                                                                      {tick}
+                                                                  </span>
+                                                                  <span className="text-xs font-bold text-zinc-600 dark:text-zinc-400 tabular-nums privacy-blur">
+                                                                      {formatCurrency(val / rate, mainCurrency)}
+                                                                  </span>
+                                                              </div>
+                                                            );
+                                                        })}
                                                     </>
                                                 )}
                                             </div>
@@ -274,6 +324,19 @@ export function HistoryChart({ data, ghostData, ghostName, mainCurrency = "CZK",
                                 name={ghostName || 'Ghost'}
                             />
                         )}
+                        {showAssets && activeTab === 'TOTAL' && uniqueTickers.map((ticker, idx) => (
+                            <Line
+                                key={ticker}
+                                type="monotone"
+                                dataKey={`asset_${ticker}`}
+                                stroke={ASSET_COLORS[idx % ASSET_COLORS.length]}
+                                strokeWidth={2}
+                                dot={false}
+                                name={ticker}
+                                animationDuration={800}
+                                strokeOpacity={0.8}
+                            />
+                        ))}
                     </AreaChart>
                 </ResponsiveContainer>
             </div>

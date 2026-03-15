@@ -15,9 +15,11 @@ interface DashboardLayoutProps {
     onMainCurrencyChange?: (currency: "CZK" | "EUR" | "USD") => void;
     secondaryCurrency?: "CZK" | "EUR" | "USD";
     onSecondaryCurrencyChange?: (currency: "CZK" | "EUR" | "USD") => void;
+    activeView?: "PORTFOLIO" | "MARKET";
+    onViewChange?: (view: "PORTFOLIO" | "MARKET") => void;
 }
 
-export function DashboardLayout({ children, dataProvider, onProviderChange, rebalanceTolerance, onToleranceChange, mainCurrency, onMainCurrencyChange, secondaryCurrency, onSecondaryCurrencyChange }: DashboardLayoutProps) {
+export function DashboardLayout({ children, dataProvider, onProviderChange, rebalanceTolerance, onToleranceChange, mainCurrency, onMainCurrencyChange, secondaryCurrency, onSecondaryCurrencyChange, activeView = "PORTFOLIO", onViewChange }: DashboardLayoutProps) {
     const { language, setLanguage, t } = useLanguage();
     const [isDark, setIsDark] = useState(false);
     const [isPrivacy, setIsPrivacy] = useState(false);
@@ -80,12 +82,42 @@ export function DashboardLayout({ children, dataProvider, onProviderChange, reba
             <nav className="sticky top-0 z-50 w-full border-b border-white/20 dark:border-white/5 bg-white/60 dark:bg-zinc-950/40 backdrop-blur-xl">
                 <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 items-center justify-between">
-                        <div className="flex items-center gap-2">
-                            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900">
-                                <TrendingUp size={20} strokeWidth={2.5} />
+                        <div className="flex items-center gap-6">
+                            <div className="flex items-center gap-2">
+                                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900">
+                                    <TrendingUp size={20} strokeWidth={2.5} />
+                                </div>
+                                <span className="text-xl font-bold tracking-tight">Investio</span>
+                                <span className="text-[10px] font-medium text-zinc-400 dark:text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded-md leading-none self-center">v0.3.0-beta</span>
                             </div>
-                            <span className="text-xl font-bold tracking-tight">Investio</span>
-                            <span className="text-[10px] font-medium text-zinc-400 dark:text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded-md leading-none self-center">v0.2.0-beta</span>
+
+                            {/* View Switcher Desktop */}
+                            {onViewChange && (
+                                <div className="hidden md:flex items-center p-1 rounded-xl bg-zinc-100/80 dark:bg-zinc-900/50 border border-zinc-200/50 dark:border-zinc-800">
+                                    <button
+                                        onClick={() => onViewChange("PORTFOLIO")}
+                                        className={cn(
+                                            "px-3 py-1.5 rounded-lg text-sm font-semibold transition-all",
+                                            activeView === "PORTFOLIO"
+                                                ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm"
+                                                : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                                        )}
+                                    >
+                                        Moje Portfolia
+                                    </button>
+                                    <button
+                                        onClick={() => onViewChange("MARKET")}
+                                        className={cn(
+                                            "px-3 py-1.5 rounded-lg text-sm font-semibold transition-all",
+                                            activeView === "MARKET"
+                                                ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm"
+                                                : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                                        )}
+                                    >
+                                        Přehled trhu
+                                    </button>
+                                </div>
+                            )}
                         </div>
 
                         <div className="flex items-center gap-1">
@@ -201,6 +233,36 @@ export function DashboardLayout({ children, dataProvider, onProviderChange, reba
                     </div>
                 </div>
             </nav>
+
+            {/* View Switcher Mobile */}
+            {onViewChange && (
+                <div className="md:hidden sticky top-16 z-40 w-full border-b border-zinc-200 dark:border-zinc-800/50 bg-white/60 dark:bg-zinc-950/40 backdrop-blur-xl px-4 py-3">
+                    <div className="flex items-center p-1 rounded-xl bg-zinc-100/80 dark:bg-zinc-900/50 w-full">
+                        <button
+                            onClick={() => onViewChange("PORTFOLIO")}
+                            className={cn(
+                                "flex-1 px-3 py-2 rounded-lg text-sm font-semibold transition-all",
+                                activeView === "PORTFOLIO"
+                                    ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm"
+                                    : "text-zinc-500"
+                            )}
+                        >
+                            Portfolia
+                        </button>
+                        <button
+                            onClick={() => onViewChange("MARKET")}
+                            className={cn(
+                                "flex-1 px-3 py-2 rounded-lg text-sm font-semibold transition-all",
+                                activeView === "MARKET"
+                                    ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm"
+                                    : "text-zinc-500"
+                            )}
+                        >
+                            Trh
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* Main Content Area */}
             <main className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8 md:py-12">
