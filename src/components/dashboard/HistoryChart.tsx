@@ -174,7 +174,7 @@ export function HistoryChart({ data, ghostData, ghostName, mainCurrency = "CZK",
                             )}
                         >
                             <Layers size={16} />
-                            {showAssets ? 'Skrýt aktiva' : 'Zobrazit aktiva'}
+                            {showAssets ? t("history.hideAssets") : t("history.showAssets")}
                         </button>
                     )}
                 </div>
@@ -219,7 +219,7 @@ export function HistoryChart({ data, ghostData, ghostName, mainCurrency = "CZK",
                                                         <div className="flex justify-between items-center gap-4">
                                                             <span className="text-sm text-violet-600 dark:text-violet-400 flex items-center gap-1">
                                                                 <span className="w-2 h-2 rounded-full bg-violet-500 inline-block"></span>
-                                                                Moje portfolio
+                                                                {t("history.myPortfolio")}
                                                             </span>
                                                             <span className="text-base font-bold tabular-nums text-zinc-900 dark:text-zinc-50 privacy-blur">
                                                                 {raw.displayValue.toFixed(1)}%
@@ -238,7 +238,7 @@ export function HistoryChart({ data, ghostData, ghostName, mainCurrency = "CZK",
                                                         )}
                                                         {raw.ghostAbsolute !== undefined && (
                                                             <div className="flex justify-between items-center gap-4 border-t border-zinc-200/50 dark:border-zinc-800/50 pt-1 mt-1">
-                                                                <span className="text-xs text-zinc-500">Ghost hodnota</span>
+                                                                <span className="text-xs text-zinc-500">{t("history.ghostValue")}</span>
                                                                 <span className="text-xs font-medium text-zinc-500 tabular-nums privacy-blur">
                                                                     {formatCurrency(raw.ghostAbsolute / rate, mainCurrency)}
                                                                 </span>
@@ -249,7 +249,7 @@ export function HistoryChart({ data, ghostData, ghostName, mainCurrency = "CZK",
                                                     <>
                                                         <div className="flex justify-between items-center gap-4">
                                                             <span className="text-sm text-zinc-600 dark:text-zinc-300">
-                                                                {isProfitMode ? 'Čistý zisk' : 'Hodnota'}
+                                                                {isProfitMode ? t("history.netProfit") : t("history.value")}
                                                             </span>
                                                             <span className={cn(
                                                                 "text-base font-bold tabular-nums privacy-blur",
@@ -263,7 +263,7 @@ export function HistoryChart({ data, ghostData, ghostName, mainCurrency = "CZK",
 
                                                         {!isProfitMode && raw.totalInvestedCzk !== undefined && raw.totalInvestedCzk > 0 && (
                                                             <div className="flex justify-between items-center gap-4 border-t border-zinc-200/50 dark:border-zinc-800/50 pt-1 mt-1">
-                                                                <span className="text-xs text-zinc-500">Celkem vloženo</span>
+                                                                <span className="text-xs text-zinc-500">{t("history.totalInvested")}</span>
                                                                 <span className="text-xs font-medium text-zinc-500 tabular-nums privacy-blur">
                                                                     {formatCurrency(raw.totalInvestedCzk / rate, mainCurrency)}
                                                                 </span>
@@ -272,7 +272,7 @@ export function HistoryChart({ data, ghostData, ghostName, mainCurrency = "CZK",
 
                                                         {isProfitMode && raw.totalValueCzk > 0 && (
                                                             <div className="flex justify-between items-center gap-4 border-t border-zinc-200/50 dark:border-zinc-800/50 pt-1 mt-1">
-                                                                <span className="text-xs text-zinc-500">Celková hodnota</span>
+                                                                <span className="text-xs text-zinc-500">{t("history.totalValue")}</span>
                                                                 <span className="text-xs font-medium text-zinc-500 tabular-nums privacy-blur">
                                                                     {formatCurrency(raw.totalValueCzk / rate, mainCurrency)}
                                                                 </span>

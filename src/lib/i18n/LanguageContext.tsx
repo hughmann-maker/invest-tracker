@@ -3,8 +3,11 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { cs, Translations } from "./cs";
 import { en } from "./en";
+import { sk } from "./sk";
+import { pl } from "./pl";
+import { de } from "./de";
 
-type Language = "cs" | "en";
+export type Language = "cs" | "en" | "sk" | "pl" | "de";
 
 interface LanguageContextProps {
     language: Language;
@@ -12,7 +15,7 @@ interface LanguageContextProps {
     t: (key: keyof Translations) => string;
 }
 
-const dictionaries = { cs, en };
+const dictionaries = { cs, en, sk, pl, de };
 
 const LanguageContext = createContext<LanguageContextProps | undefined>(undefined);
 
@@ -22,7 +25,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         const stored = localStorage.getItem("investice_lang") as Language;
-        if (stored === "cs" || stored === "en") {
+        if (stored && ["cs", "en", "sk", "pl", "de"].includes(stored)) {
             setLanguageState(stored);
         }
         setMounted(true);

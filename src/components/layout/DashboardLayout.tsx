@@ -24,14 +24,21 @@ export function DashboardLayout({ children, dataProvider, onProviderChange, reba
     const [isDark, setIsDark] = useState(false);
     const [isPrivacy, setIsPrivacy] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const [isLangOpen, setIsLangOpen] = useState(false);
     const [mounted, setMounted] = useState(false);
 
     // Close settings if clicked outside
     const settingsRef = useRef<HTMLDivElement>(null);
+    const langRef = useRef<HTMLDivElement>(null);
+    
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
-            if (settingsRef.current && !settingsRef.current.contains(event.target as Node)) {
+            const target = event.target as Node;
+            if (settingsRef.current && !settingsRef.current.contains(target)) {
                 setIsSettingsOpen(false);
+            }
+            if (langRef.current && !langRef.current.contains(target)) {
+                setIsLangOpen(false);
             }
         }
         document.addEventListener("mousedown", handleClickOutside);
@@ -103,7 +110,7 @@ export function DashboardLayout({ children, dataProvider, onProviderChange, reba
                                                 : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
                                         )}
                                     >
-                                        Moje Portfolia
+                                        {t("nav.portfolios")}
                                     </button>
                                     <button
                                         onClick={() => onViewChange("MARKET")}
@@ -114,7 +121,7 @@ export function DashboardLayout({ children, dataProvider, onProviderChange, reba
                                                 : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
                                         )}
                                     >
-                                        Přehled trhu
+                                        {t("nav.market")}
                                     </button>
                                 </div>
                             )}
@@ -125,7 +132,7 @@ export function DashboardLayout({ children, dataProvider, onProviderChange, reba
                                 onClick={togglePrivacy}
                                 className="rounded-full p-2 text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 transition-colors"
                                 aria-label="Toggle Privacy Mode"
-                                title="Skrýt investice"
+                                title={t("nav.privacy")}
                             >
                                 {isPrivacy ? <EyeOff size={20} /> : <Eye size={20} />}
                             </button>
@@ -138,14 +145,47 @@ export function DashboardLayout({ children, dataProvider, onProviderChange, reba
                                 {isDark ? <Sun size={20} /> : <Moon size={20} />}
                             </button>
 
-                            <button
-                                onClick={() => setLanguage(language === "cs" ? "en" : "cs")}
-                                className="flex items-center justify-center rounded-full p-2 text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 transition-colors"
-                                aria-label="Toggle Language"
-                                title={language === "cs" ? "Přepnout do Angličtiny" : "Switch to Czech"}
-                            >
-                                <span className="text-xs font-bold uppercase w-5 text-center">{language}</span>
-                            </button>
+                            <div className="relative" ref={langRef}>
+                                <button
+                                    onClick={() => setIsLangOpen(!isLangOpen)}
+                                    className={cn(
+                                        "flex items-center justify-center rounded-full p-2 text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 transition-colors",
+                                        isLangOpen && "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50"
+                                    )}
+                                    aria-label="Select Language"
+                                >
+                                    <span className="text-xs font-bold uppercase w-5 text-center">{language}</span>
+                                </button>
+
+                                {isLangOpen && (
+                                    <div className="absolute right-0 mt-3 w-36 rounded-2xl border border-white/20 dark:border-zinc-700/50 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl shadow-2xl p-2 flex flex-col gap-1 z-50">
+                                        {[
+                                            { code: "cs", label: "Čeština" },
+                                            { code: "en", label: "English" },
+                                            { code: "sk", label: "Slovenčina" },
+                                            { code: "pl", label: "Polski" },
+                                            { code: "de", label: "Deutsch" }
+                                        ].map((lang) => (
+                                            <button
+                                                key={lang.code}
+                                                onClick={() => {
+                                                    setLanguage(lang.code as any);
+                                                    setIsLangOpen(false);
+                                                }}
+                                                className={cn(
+                                                    "w-full text-left px-3 py-2 text-sm font-medium rounded-xl transition-colors flex items-center justify-between",
+                                                    language === lang.code
+                                                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                                                        : "text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800/50"
+                                                )}
+                                            >
+                                                <span>{lang.label}</span>
+                                                <span className="text-[10px] uppercase font-bold opacity-40">{lang.code}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
 
                             <div className="relative" ref={settingsRef}>
                                 <button
@@ -154,8 +194,8 @@ export function DashboardLayout({ children, dataProvider, onProviderChange, reba
                                         "rounded-full p-2 text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 transition-colors",
                                         isSettingsOpen && "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50"
                                     )}
-                                    aria-label="Nastavení"
-                                    title="Nastavení"
+                                    aria-label={t("nav.settings")}
+                                    title={t("nav.settings")}
                                 >
                                     <Settings size={20} />
                                 </button>
@@ -247,7 +287,7 @@ export function DashboardLayout({ children, dataProvider, onProviderChange, reba
                                     : "text-zinc-500"
                             )}
                         >
-                            Portfolia
+                            {t("nav.portfolios")}
                         </button>
                         <button
                             onClick={() => onViewChange("MARKET")}
@@ -258,7 +298,7 @@ export function DashboardLayout({ children, dataProvider, onProviderChange, reba
                                     : "text-zinc-500"
                             )}
                         >
-                            Trh
+                            {t("nav.market")}
                         </button>
                     </div>
                 </div>

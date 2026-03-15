@@ -136,6 +136,30 @@ export function MarketOverview({ dataProvider, mainCurrency, exchangeRates }: Ma
       "market.silver": "Silver",
       "market.platinum": "Platinum",
       "market.palladium": "Palladium",
+    },
+    sk: {
+      "market.title": "Prehľad trhu",
+      "market.subtitle": "Aktuálne spotové ceny drahých kovov",
+      "market.gold": "Zlato (Gold)",
+      "market.silver": "Striebro (Silver)",
+      "market.platinum": "Platina",
+      "market.palladium": "Paládium",
+    },
+    pl: {
+      "market.title": "Przegląd rynku",
+      "market.subtitle": "Aktualne kursy spot metali szlachetnych",
+      "market.gold": "Złoto (Gold)",
+      "market.silver": "Srebro (Silver)",
+      "market.platinum": "Platyna",
+      "market.palladium": "Pallad",
+    },
+    de: {
+      "market.title": "Marktübersicht",
+      "market.subtitle": "Aktuelle Spotpreise von Edelmetallen",
+      "market.gold": "Gold",
+      "market.silver": "Silber",
+      "market.platinum": "Platin",
+      "market.palladium": "Palladium",
     }
   };
 

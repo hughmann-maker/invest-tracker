@@ -4,6 +4,8 @@ export const cs = {
     "nav.settings": "Nastavení",
     "nav.privacy": "Skrýt investice",
     "nav.theme": "Změnit vzhled",
+    "nav.portfolios": "Portfolia",
+    "nav.market": "Přehled trhu",
     "settings.provider": "Zdroj dat",
     "settings.tolerance": "Toleranční pásmo",
     "settings.mainCurrency": "Hlavní měna",
@@ -134,6 +136,14 @@ export const cs = {
     "history.subtitle": "Vývoj celkové hodnoty v čase (CZK)",
     "history.tabValue": "Hodnota",
     "history.tabProfit": "Zisk",
+    "history.showAssets": "Zobrazit aktiva",
+    "history.hideAssets": "Skrýt aktiva",
+    "history.myPortfolio": "Moje portfolio",
+    "history.ghostValue": "Ghost hodnota",
+    "history.totalInvested": "Celkem vloženo",
+    "history.totalValue": "Celková hodnota",
+    "history.netProfit": "Čistý zisk",
+    "history.value": "Hodnota",
 
     // Annual Report (Summary)
     "report.title": "Souhrnná zpráva",

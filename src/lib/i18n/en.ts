@@ -6,6 +6,8 @@ export const en: Translations = {
     "nav.settings": "Settings",
     "nav.privacy": "Toggle Privacy",
     "nav.theme": "Toggle Theme",
+    "nav.portfolios": "Portfolios",
+    "nav.market": "Market",
     "settings.provider": "Data Provider",
     "settings.tolerance": "Tolerance Band",
     "settings.mainCurrency": "Main Currency",
@@ -136,6 +138,14 @@ export const en: Translations = {
     "history.subtitle": "Total value development over time (CZK)",
     "history.tabValue": "Value",
     "history.tabProfit": "Profit",
+    "history.showAssets": "Show Assets",
+    "history.hideAssets": "Hide Assets",
+    "history.myPortfolio": "My Portfolio",
+    "history.ghostValue": "Ghost Value",
+    "history.totalInvested": "Total Invested",
+    "history.totalValue": "Total Value",
+    "history.netProfit": "Net Profit",
+    "history.value": "Value",
 
     // Annual Report (Summary)
     "report.title": "Summary Report",
