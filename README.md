@@ -8,11 +8,11 @@ Designed to run on a **Raspberry Pi** or any local machine as your personal, pri
 
 ### Portfolio Dashboard
 - **Real-time prices** — live quotes from Yahoo Finance (free, no API key needed)
-- **Multi-currency support** — assets in EUR, USD with automatic CZK conversion via live exchange rates
+- **Multi-currency support** — assets in EUR, USD with automatic conversion to your preferred base currency via live exchange rates
 - **Daily change tracking** — see absolute and percentage changes for each asset
 - **Bento-style summary cards** — total portfolio value, daily P&L, invested vs. current value
 
-### Market Overview (Přehled trhu)
+### Market Overview
 - **Live spot prices** — view live data for Gold, Silver, Platinum, and Palladium directly from Yahoo Finance commodity futures.
 - **Sparkline charts** — 30-day mini charts for each asset to quickly gauge trends.
 - **Auto-conversion** — converts commodity USD values into your preferred main currency.
@@ -58,7 +58,7 @@ Designed to run on a **Raspberry Pi** or any local machine as your personal, pri
 - **Independent data** — each portfolio has its own assets, transactions, history, and deposits
 
 ### Internationalization
-- **Czech & English UI** — switch between languages in the app header
+- **Multi-language UI** — switch between English and localized languages in the app header
 
 ### Auto-Refresh
 - **Configurable auto-refresh** — prices update automatically at provider-specific intervals
@@ -181,7 +181,7 @@ Configurable in the UI — default is 5%. When any asset's actual weight deviate
 | Portfolio Switcher | Dropdown to switch between portfolios, create new, rename, or delete |
 | � Privacy Mode | Blur sensitive financial values |
 | 🌙/☀️ Theme | Toggle dark/light mode |
-| Language Toggle | Switch between Czech (CZ) and English (EN) |
+| Language Toggle | Switch between English (EN) and other localized languages |
 | ⚙️ Settings | Data provider, currencies, rebalance tolerance |
 
 ### Action Buttons (⋯ Menu)
@@ -242,17 +242,17 @@ Returns the same data as a downloadable CSV file.
             "shares": 10,
             "price": 550.20,
             "currency": "EUR",
-            "valueCzk": 137550.00,
+            "valueBase": 137550.00,
             "valueEur": 5502.00,
             "targetWeight": 0.70,
             "actualWeight": 0.68,
             "dailyChangePercent": 0.45
           }
         ],
-        "totalValueCzk": 202279.50,
+        "totalValueBase": 202279.50,
         "totalValueEur": 8091.18,
-        "totalInvestedCzk": 180000.00,
-        "profitCzk": 22279.50,
+        "totalInvestedBase": 180000.00,
+        "profitBase": 22279.50,
         "profitPercent": 12.38
       },
       "transactions": [...],
@@ -331,11 +331,11 @@ The app will be accessible at `http://<raspberry-pi-ip>:3000` from any device on
 
 ### v0.3.0 (2026-03-15)
 **New Features:**
-- 🌍 **Market Overview (Přehled trhu)** — new global view beside portfolios tracking Gold, Silver, Platinum, and Palladium with 30-day sparklines.
+- 🌍 **Market Overview** — new global view beside portfolios tracking Gold, Silver, Platinum, and Palladium with 30-day sparklines.
 - 📈 **Asset History Lines** — added toggle to "Show Assets" inside the History Chart, tracking the individual value of held assets over time.
 
 **Bug Fixes:**
-- 🐛 **Historical zero-drops** — completely solved an issue where weekend/holiday logic would create "0 CZK" portfolio snapshot days.
+- 🐛 **Historical zero-drops** — completely solved an issue where weekend/holiday logic would create "0" value portfolio snapshot days.
 - ♻️ **Retroactive asset history** — the app now automatically looks through old `portfolios.json` histories and computes the missing asset breakdown from old closing prices. 
 
 ### v0.2.0-beta (2026-03-04)
@@ -364,7 +364,7 @@ The app will be accessible at `http://<raspberry-pi-ip>:3000` from any device on
 - Ghost portfolio what-if analysis
 - Annual report & correlation heatmap
 - CSV export & AI Agent API
-- Czech & English localization
+- Multi-language localization
 - Privacy mode & dark/light theme
 - `start.bat` (Windows) and `start.sh` (Raspberry Pi/Linux)
 
