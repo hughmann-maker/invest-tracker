@@ -11,21 +11,25 @@ Designed to run on a **Raspberry Pi** or any local machine as your personal, pri
 - **Multi-currency support** — assets in EUR, USD with automatic conversion to your preferred base currency via live exchange rates
 - **Daily change tracking** — see absolute and percentage changes for each asset
 - **Bento-style summary cards** — total portfolio value, daily P&L, invested vs. current value
+- **Uninvested & Exchange Difference** — displays cash deposits vs. net base currency investments difference (e.g. CZK deposit mismatch) under the summary cards
 
 ### Market Overview
 - **Live spot prices** — view live data for Gold, Silver, Platinum, and Palladium directly from Yahoo Finance commodity futures.
 - **Sparkline charts** — 30-day mini charts for each asset to quickly gauge trends.
 - **Auto-conversion** — converts commodity USD values into your preferred main currency.
+- **Interactive Tooltips** — hover over sparklines to inspect historical dates and exact prices instantly.
 
 ### Asset Management
 - **Add Ticker** — add any stock/ETF by its Yahoo Finance ticker symbol (e.g. `SXR8.DE`, `AAPL`)
 - **Set Target Weights** — define target allocation percentages for each asset
 - **Edit Shares** — manually set the number of shares you hold (optional)
 - **Delete Ticker** — remove assets with a reason log for audit trail
+- **Total Return % Tracking** — displays the total historical gain/loss percentage under each asset, letting you know exactly if you are up or down (e.g. Gold `-10%`).
 
 ### Rebalancing
 - **Rebalance Alerts** — visual warnings when actual allocation deviates from targets (configurable tolerance)
 - **Smart Invest Calculator** — input an amount you want to invest and get exact share counts to buy for optimal rebalancing
+- **Profit-Lock Logic** — only recommends "PRODAT" (Sell) to reallocate if the asset is in an actual profit, avoiding fee-heavy immediate selling of "buy the dip" tactical purchases.
 
 ### Transaction History
 - **Buy/Sell Transactions** — log every trade with date, shares, price per share, and currency
@@ -34,6 +38,7 @@ Designed to run on a **Raspberry Pi** or any local machine as your personal, pri
 
 ### Portfolio History & Charts
 - **Historical value chart** — portfolio value over time in selected currency with interactive Recharts graph
+- **Split Profit/Loss Visuals** — charts dynamically split-color, rendering green above the `0` threshold (in profit) and red below it (in loss) for absolute clarity
 - **Individual asset breakdown** — toggle individual portfolio assets to see their separate historical lines within the main chart.
 - **Invested vs. Market Value** — see how your portfolio grows compared to what you put in
 - **S&P 500 Benchmark** — compare your performance against the market
@@ -58,7 +63,7 @@ Designed to run on a **Raspberry Pi** or any local machine as your personal, pri
 - **Independent data** — each portfolio has its own assets, transactions, history, and deposits
 
 ### Internationalization
-- **Multi-language UI** — switch between English and localized languages in the app header
+- **Multi-language UI** — switch between English and localized languages (EN, CS, SK, PL, DE) in the app header
 
 ### Auto-Refresh
 - **Configurable auto-refresh** — prices update automatically at provider-specific intervals
@@ -328,6 +333,15 @@ The app will be accessible at `http://<raspberry-pi-ip>:3000` from any device on
 ---
 
 ## 📋 Changelog
+
+### v0.4.0 (2026-05-31)
+**New Features:**
+- 🧠 **Profit-Lock Rebalancing Rule** — added a smart rebalancing restriction where selling suggestions are only generated if the held asset is in a net profit, preventing premature liquidation of fresh tactical "buy the dip" volds/deposits.
+- 💵 **Exchange Difference & Discrepancies** — displays currency mismatches or uninvested cash discrepancy between CZK deposits and the net base currency investment total directly under the "Total Invested" summary card.
+- 📊 **Dynamic Split-Color Charts** — portfolio value and profit/loss charts automatically color-split: emerald green when in profit (>0) and red when in loss (<0) for clear visual context.
+- 🎯 **Total Return % on Held Assets** — displays the total historical gain/loss percentage under each asset, letting you know exactly if you are up or down (e.g. Gold `-10%`).
+- 💬 **Market Overview Interactive Tooltips** — hover over commodity sparklines (Gold, Silver, Platinum, Palladium) to view historical prices and dates directly on the charts.
+- 🌍 **Expanded Internationalization** — fully translated new labels, tooltips, and features across Czech, English, Slovak, Polish, and German.
 
 ### v0.3.0 (2026-03-15)
 **New Features:**
