@@ -152,7 +152,7 @@ export function AnnualReport({ historyData, deposits, transactions, assets, main
         }
 
         const totalDepositsCzk = deposits.reduce((sum, d) => sum + d.amountCzk, 0);
-        const exchangeDiff = totalDepositsCzk - totalInvested;
+        const exchangeDiff = totalInvested - totalDepositsCzk;
 
         return {
             totalInvested,
