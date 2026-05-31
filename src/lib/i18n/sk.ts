@@ -66,6 +66,7 @@ export const sk: Translations = {
     "assets.errorWeight": "Zadajte platnú cieľovú váhu v percentách.",
     "assets.errorServer": "Chyba pri komunikácii so serverom.",
     "assets.errorValidation": "Nepodarilo sa overiť ticker.",
+    "assets.totalReturn": "Celkový výnos",
 
     // Delete Modal
     "delete.title": "Zmazať aktívum",
@@ -169,6 +170,8 @@ export const sk: Translations = {
     "report.roi": "Zhodnotenie",
     "report.volatility": "Volatilita (denná)",
     "report.volatilityDesc": "Vyššia volatilita značí agresívnejšie pohyby a vyššie riziko.",
+    "report.recordedDeposits": "Zapísané vklady",
+    "report.exchangeDiff": "Kurzový rozdiel / Zostatok",
 
     // Correlation Heatmap
     "heatmap.title": "Korelačná matica",

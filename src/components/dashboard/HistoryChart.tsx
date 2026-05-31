@@ -99,6 +99,17 @@ export function HistoryChart({ data, ghostData, ghostName, mainCurrency = "CZK",
         ? (latestValue >= 0 ? "#10b981" : "#ef4444")
         : "#8b5cf6";
 
+    // Spočítáme offset pro rozdělení barev v ziskovém grafu (0 line)
+    let profitOffset = 0;
+    if (isProfitMode) {
+        const values = chartData.map(d => d.displayValue);
+        const maxVal = Math.max(...values, 0);
+        const minVal = Math.min(...values, 0);
+        if (maxVal !== minVal) {
+            profitOffset = maxVal / (maxVal - minVal);
+        }
+    }
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -188,9 +199,25 @@ export function HistoryChart({ data, ghostData, ghostName, mainCurrency = "CZK",
                     >
                         <defs>
                             <linearGradient id="colorDynamic" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor={strokeColor} stopOpacity={isGhostMode ? 0.15 : isProfitMode ? 0.35 : 0.3} />
+                                <stop offset="5%" stopColor={strokeColor} stopOpacity={isGhostMode ? 0.15 : 0.3} />
                                 <stop offset="95%" stopColor={strokeColor} stopOpacity={0} />
                             </linearGradient>
+                            {isProfitMode && (
+                                <>
+                                    <linearGradient id="colorProfit" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stopColor="#10b981" stopOpacity={0.4} />
+                                        <stop offset={`${profitOffset * 100}%`} stopColor="#10b981" stopOpacity={0.05} />
+                                        <stop offset={`${profitOffset * 100}%`} stopColor="#ef4444" stopOpacity={0.05} />
+                                        <stop offset="100%" stopColor="#ef4444" stopOpacity={0.4} />
+                                    </linearGradient>
+                                    <linearGradient id="strokeProfit" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stopColor="#10b981" stopOpacity={1} />
+                                        <stop offset={`${profitOffset * 100}%`} stopColor="#10b981" stopOpacity={1} />
+                                        <stop offset={`${profitOffset * 100}%`} stopColor="#ef4444" stopOpacity={1} />
+                                        <stop offset="100%" stopColor="#ef4444" stopOpacity={1} />
+                                    </linearGradient>
+                                </>
+                            )}
                         </defs>
                         <XAxis
                             dataKey="date"
@@ -306,10 +333,10 @@ export function HistoryChart({ data, ghostData, ghostName, mainCurrency = "CZK",
                             <Area
                                 type="monotone"
                                 dataKey="displayValue"
-                                stroke={strokeColor}
+                                stroke={isProfitMode ? "url(#strokeProfit)" : strokeColor}
                                 strokeWidth={3}
                                 fillOpacity={1}
-                                fill="url(#colorDynamic)"
+                                fill={isProfitMode ? "url(#colorProfit)" : "url(#colorDynamic)"}
                                 animationDuration={800}
                                 name="Portfolio"
                             />

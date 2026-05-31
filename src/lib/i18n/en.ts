@@ -66,6 +66,7 @@ export const en: Translations = {
     "assets.errorWeight": "Enter a valid target weight in percent.",
     "assets.errorServer": "Error communicating with server.",
     "assets.errorValidation": "Failed to validate ticker.",
+    "assets.totalReturn": "Total Return",
 
     // Delete Modal
     "delete.title": "Delete Asset",
@@ -169,6 +170,8 @@ export const en: Translations = {
     "report.roi": "Return on Investment",
     "report.volatility": "Volatility (Daily)",
     "report.volatilityDesc": "Higher volatility indicates more aggressive price movements and higher risk.",
+    "report.recordedDeposits": "Recorded Deposits",
+    "report.exchangeDiff": "Exchange Difference / Balance",
 
     // Correlation Heatmap
     "heatmap.title": "Correlation Matrix",

@@ -64,6 +64,7 @@ export const cs = {
     "assets.errorWeight": "Zadejte platnou cílovou váhu v procentech.",
     "assets.errorServer": "Chyba při komunikaci se serverem.",
     "assets.errorValidation": "Nepodařilo se ověřit ticker.",
+    "assets.totalReturn": "Celkový výnos",
 
     // Delete Modal
     "delete.title": "Smazat aktivum",
@@ -167,6 +168,8 @@ export const cs = {
     "report.roi": "Zhodnocení",
     "report.volatility": "Volatilita (denní)",
     "report.volatilityDesc": "Vyšší volatilita značí agresivnější pohyby a vyšší riziko.",
+    "report.recordedDeposits": "Zapsané vklady",
+    "report.exchangeDiff": "Kurzovní rozdíl / Zůstatek",
 
     // Correlation Heatmap
     "heatmap.title": "Korelační matice",

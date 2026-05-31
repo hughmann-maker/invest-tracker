@@ -151,6 +151,9 @@ export function AnnualReport({ historyData, deposits, transactions, assets, main
             currentUsd = assets.filter(a => a.currency === "USD").reduce((s, a) => s + (a.shares * a.price), 0);
         }
 
+        const totalDepositsCzk = deposits.reduce((sum, d) => sum + d.amountCzk, 0);
+        const exchangeDiff = totalDepositsCzk - totalInvested;
+
         return {
             totalInvested,
             investedEur,
@@ -162,9 +165,11 @@ export function AnnualReport({ historyData, deposits, transactions, assets, main
             profit,
             profitPercent,
             volatility,
-            daysTracked: filteredHistory.length
+            daysTracked: filteredHistory.length,
+            totalDepositsCzk,
+            exchangeDiff
         };
-    }, [filteredHistory, transactions, assets, historyData]);
+    }, [filteredHistory, transactions, assets, historyData, deposits]);
 
     const formatCurrency = (val: number, currency: string) => {
         return new Intl.NumberFormat("cs-CZ", {
@@ -265,7 +270,8 @@ export function AnnualReport({ historyData, deposits, transactions, assets, main
                         </div>
                         {((mainCurrency !== secondaryCurrency) ||
                             (stats.investedEur > 0 && mainCurrency !== "EUR" && secondaryCurrency !== "EUR") ||
-                            (stats.investedUsd > 0 && mainCurrency !== "USD" && secondaryCurrency !== "USD")) && (
+                            (stats.investedUsd > 0 && mainCurrency !== "USD" && secondaryCurrency !== "USD") ||
+                            (stats.totalDepositsCzk > 0)) && (
                                 <div className="mt-4 pt-3 border-t border-zinc-200 dark:border-zinc-700 flex flex-col gap-1.5">
                                     {mainCurrency !== secondaryCurrency && (
                                         <div className="flex items-center justify-between text-xs font-semibold">
@@ -283,6 +289,23 @@ export function AnnualReport({ historyData, deposits, transactions, assets, main
                                         <div className="flex items-center justify-between text-xs font-semibold">
                                             <span className="text-blue-700 dark:text-blue-400 privacy-blur">{formatCurrency(stats.investedUsd, "USD")} (Hist.)</span>
                                             <span className="text-blue-700 dark:text-blue-400">USD</span>
+                                        </div>
+                                    )}
+                                    {stats.totalDepositsCzk > 0 && (
+                                        <div className="flex items-center justify-between text-xs font-semibold mt-1 pt-1.5 border-t border-dashed border-zinc-200/50 dark:border-zinc-700/50">
+                                            <span className="text-zinc-500 dark:text-zinc-400">{t("report.recordedDeposits")}</span>
+                                            <span className="text-zinc-700 dark:text-zinc-300 privacy-blur">{formatCurrency(stats.totalDepositsCzk, "CZK")}</span>
+                                        </div>
+                                    )}
+                                    {stats.totalDepositsCzk > 0 && Math.abs(stats.exchangeDiff) > 1 && (
+                                        <div className="flex items-center justify-between text-xs font-semibold">
+                                            <span className="text-zinc-500 dark:text-zinc-400">{t("report.exchangeDiff")}</span>
+                                            <span className={cn(
+                                                "privacy-blur font-bold",
+                                                stats.exchangeDiff >= 0 ? "text-amber-600 dark:text-amber-400" : "text-red-600 dark:text-red-400"
+                                            )}>
+                                                {stats.exchangeDiff > 0 ? "+" : ""}{formatCurrency(stats.exchangeDiff, "CZK")}
+                                            </span>
                                         </div>
                                     )}
                                 </div>

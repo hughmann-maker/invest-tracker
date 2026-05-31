@@ -16,6 +16,7 @@ export interface Asset {
     actualWeight: number;
     dailyChange: number;
     dailyChangePercent: number;
+    totalProfitPercent?: number | null;
 }
 
 interface AssetsListProps {
@@ -146,6 +147,19 @@ export function AssetTableRow({ asset, index, totalAssets, onSharesChange, excha
                         {isPositive ? <TrendingUp size={14} /> : <TrendingDown size={14} />}{" "}
                         {isPositive ? "+" : ""}{asset.dailyChangePercent.toFixed(2)}%
                     </span>
+                    {asset.totalProfitPercent !== undefined && asset.totalProfitPercent !== null && (
+                        <span
+                            className={cn(
+                                "text-xs font-semibold tabular-nums mt-0.5 privacy-blur",
+                                asset.totalProfitPercent >= 0 
+                                    ? "text-teal-600/80 dark:text-teal-400/80" 
+                                    : "text-red-600/80 dark:text-red-400/80"
+                            )}
+                            title={t("assets.totalReturn")}
+                        >
+                            {t("assets.totalReturn")}: {asset.totalProfitPercent > 0 ? "+" : ""}{(asset.totalProfitPercent * 100).toFixed(1)}%
+                        </span>
+                    )}
                 </div>
             </div>
 

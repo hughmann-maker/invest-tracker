@@ -66,6 +66,7 @@ export const pl: Translations = {
     "assets.errorWeight": "Wprowadź prawidłową wagę w procentach.",
     "assets.errorServer": "Błąd komunikacji z serwerem.",
     "assets.errorValidation": "Nie udało się zweryfikować tickera.",
+    "assets.totalReturn": "Całkowity zwrot",
 
     // Delete Modal
     "delete.title": "Usuń aktywo",
@@ -169,6 +170,8 @@ export const pl: Translations = {
     "report.roi": "Zwrot z inwestycji",
     "report.volatility": "Zmienność (dzienna)",
     "report.volatilityDesc": "Większa zmienność oznacza bardziej agresywne ruchy i wyższe ryzyko.",
+    "report.recordedDeposits": "Zapisane depozyty",
+    "report.exchangeDiff": "Różnica kursowa / Saldo",
 
     // Correlation Heatmap
     "heatmap.title": "Macierz korelacji",

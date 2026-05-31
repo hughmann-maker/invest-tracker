@@ -66,6 +66,7 @@ export const de: Translations = {
     "assets.errorWeight": "Bitte gültige Gewichtung in Prozent eingeben.",
     "assets.errorServer": "Fehler bei der Serverkommunikation.",
     "assets.errorValidation": "Ticker konnte nicht validiert werden.",
+    "assets.totalReturn": "Gesamtrendite",
 
     // Delete Modal
     "delete.title": "Vermögenswert löschen",
@@ -169,6 +170,8 @@ export const de: Translations = {
     "report.roi": "Rendite (ROI)",
     "report.volatility": "Volatilität (täglich)",
     "report.volatilityDesc": "Hohe Volatilität zeigt aggressivere Kursbewegungen und ein höheres Risiko.",
+    "report.recordedDeposits": "Eingetragene Einzahlungen",
+    "report.exchangeDiff": "Kursdifferenz / Kassenbestand",
 
     // Correlation Heatmap
     "heatmap.title": "Korrelationsmatrix",

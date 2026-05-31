@@ -1156,7 +1156,8 @@ export default function DashboardPage() {
   // Váhy
   const updatedAssets = assets.map(a => ({
     ...a,
-    actualWeight: totalValueCzk > 0 ? (a.price * a.shares * (a.currency === "USD" ? exchangeRates.USD : exchangeRates.EUR)) / totalValueCzk : 0
+    actualWeight: totalValueCzk > 0 ? (a.price * a.shares * (a.currency === "USD" ? exchangeRates.USD : exchangeRates.EUR)) / totalValueCzk : 0,
+    totalProfitPercent: calculateAssetProfitPercent(a.ticker, a.price, transactions)
   }));
 
   // Rebalance Logika z PLAN.md (vyhodnocování ±% tolerančního pásma podle uživatelského nastavení)

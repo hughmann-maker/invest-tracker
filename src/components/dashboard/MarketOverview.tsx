@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { AreaChart, Area, ResponsiveContainer } from "recharts";
+import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { TrendingUp, TrendingDown, Clock, Loader2 } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { cn } from "@/utils/cn";
@@ -239,6 +239,25 @@ export function MarketOverview({ dataProvider, mainCurrency, exchangeRates }: Ma
                           <stop offset="95%" stopColor={item.color} stopOpacity={0} />
                         </linearGradient>
                       </defs>
+                      <XAxis dataKey="date" hide />
+                      <Tooltip
+                        content={({ active, payload }) => {
+                          if (active && payload && payload.length) {
+                            const raw = payload[0].payload as { date: string; value: number };
+                            return (
+                              <div className="rounded-2xl border border-white/40 dark:border-white/10 bg-white/85 dark:bg-zinc-900/85 p-3 shadow-xl shadow-black/10 backdrop-blur-xl min-w-[140px] text-left">
+                                <p className="text-[10px] font-semibold text-zinc-500 dark:text-zinc-400 mb-0.5">{raw.date}</p>
+                                <div className="flex justify-between items-center gap-4">
+                                  <span className="text-sm font-bold text-zinc-900 dark:text-zinc-50 privacy-blur">
+                                    {formatCurrency(raw.value)}
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          }
+                          return null;
+                        }}
+                      />
                       <Area
                         type="monotone"
                         dataKey="value"
