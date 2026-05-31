@@ -126,21 +126,24 @@ export function AnnualReport({ historyData, deposits, transactions, assets, main
         });
 
         // Daily changes for volatility
-        const monthlyChanges: { month: string; change: number }[] = [];
+        const dailyReturns: number[] = [];
         for (let i = 1; i < filteredHistory.length; i++) {
             const prev = filteredHistory[i - 1];
             const curr = filteredHistory[i];
-            const prevInvested = prev.totalInvestedCzk || 0;
-            const currInvested = curr.totalInvestedCzk || 0;
-            const change = (curr.totalValueCzk - prev.totalValueCzk) - (currInvested - prevInvested);
-            monthlyChanges.push({ month: curr.date, change });
+            if (prev.totalValueCzk && prev.totalValueCzk > 0) {
+                const prevInvested = prev.totalInvestedCzk || 0;
+                const currInvested = curr.totalInvestedCzk || 0;
+                const change = (curr.totalValueCzk - prev.totalValueCzk) - (currInvested - prevInvested);
+                const dailyReturn = change / prev.totalValueCzk;
+                dailyReturns.push(dailyReturn);
+            }
         }
 
-        // Volatility (std deviation of daily changes)
-        const changes = monthlyChanges.map(m => m.change);
-        const avg = changes.length > 0 ? changes.reduce((s, c) => s + c, 0) / changes.length : 0;
-        const variance = changes.length > 0 ? changes.reduce((s, c) => s + Math.pow(c - avg, 2), 0) / changes.length : 0;
-        const volatility = Math.sqrt(variance);
+        // Volatility (anualized standard deviation of daily returns in %)
+        const avg = dailyReturns.length > 0 ? dailyReturns.reduce((s, r) => s + r, 0) / dailyReturns.length : 0;
+        const variance = dailyReturns.length > 0 ? dailyReturns.reduce((s, r) => s + Math.pow(r - avg, 2), 0) / dailyReturns.length : 0;
+        const dailyStdDev = Math.sqrt(variance);
+        const volatility = dailyStdDev * Math.sqrt(252) * 100;
 
         const isLatest = endTs === parseCzDate(historyData[historyData.length - 1].date);
         let currentEur = 0;
@@ -182,7 +185,7 @@ export function AnnualReport({ historyData, deposits, transactions, assets, main
     const displayInvested = mainCurrency === "CZK" ? (stats?.totalInvested || 0) : mainCurrency === "EUR" ? (stats?.totalInvested || 0) / exchangeRates.EUR : (stats?.totalInvested || 0) / exchangeRates.USD;
     const displayCurrentValue = mainCurrency === "CZK" ? (stats?.currentValue || 0) : mainCurrency === "EUR" ? (stats?.currentValue || 0) / exchangeRates.EUR : (stats?.currentValue || 0) / exchangeRates.USD;
     const displayProfit = mainCurrency === "CZK" ? (stats?.profit || 0) : mainCurrency === "EUR" ? (stats?.profit || 0) / exchangeRates.EUR : (stats?.profit || 0) / exchangeRates.USD;
-    const displayVolatility = mainCurrency === "CZK" ? (stats?.volatility || 0) : mainCurrency === "EUR" ? (stats?.volatility || 0) / exchangeRates.EUR : (stats?.volatility || 0) / exchangeRates.USD;
+    const displayVolatility = stats?.volatility || 0;
 
     const displayInvestedSec = secondaryCurrency === "CZK" ? (stats?.totalInvested || 0) : secondaryCurrency === "EUR" ? (stats?.totalInvested || 0) / exchangeRates.EUR : (stats?.totalInvested || 0) / exchangeRates.USD;
     const displayCurrentValueSec = secondaryCurrency === "CZK" ? (stats?.currentValue || 0) : secondaryCurrency === "EUR" ? (stats?.currentValue || 0) / exchangeRates.EUR : (stats?.currentValue || 0) / exchangeRates.USD;
@@ -374,14 +377,14 @@ export function AnnualReport({ historyData, deposits, transactions, assets, main
                             <Activity size={18} />
                         </div>
                         <div className="text-[13px] font-medium text-zinc-500 dark:text-zinc-400 mb-1 border-b border-dashed border-zinc-300 dark:border-zinc-700 pb-0.5 inline-block self-start">{t("report.volatility")}</div>
-                        <div className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 tabular-nums tracking-tight">{formatCurrency(displayVolatility, mainCurrency)}</div>
+                        <div className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 tabular-nums tracking-tight">{displayVolatility.toFixed(1)} %</div>
                         <p className="mt-4 pt-3 border-t border-zinc-200 dark:border-zinc-700 text-[11px] text-zinc-500 leading-tight">
                             {t("report.volatilityDesc")}
                         </p>
 
                         {/* Tooltip */}
                         <div className="absolute bottom-full right-0 md:left-1/2 md:-translate-x-1/2 mb-3 p-3.5 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 w-56 sm:w-64 z-[100] bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-xs rounded-xl shadow-xl border border-zinc-200 dark:border-zinc-700">
-                            Představuje průměrnou směrodatnou odchylku denních změn celkové hodnoty portfolia. Vyšší číslo znamená větší výkyvy a zpravidla rizikovější povahu portfolia.
+                            Představuje roční (anualizovanou) směrodatnou odchylku denních procentuálních změn celkové hodnoty portfolia. Vyšší číslo znamená větší výkyvy a typicky dynamičtější povahu portfolia.
                         </div>
                     </div>
                 </div>

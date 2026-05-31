@@ -168,7 +168,7 @@ export const en: Translations = {
     "report.currentValue": "Current Value",
     "report.netProfit": "Net Profit/Loss",
     "report.roi": "Return on Investment",
-    "report.volatility": "Volatility (Daily)",
+    "report.volatility": "Volatility (Annual)",
     "report.volatilityDesc": "Higher volatility indicates more aggressive price movements and higher risk.",
     "report.recordedDeposits": "Recorded Deposits",
     "report.exchangeDiff": "Exchange Difference / Balance",

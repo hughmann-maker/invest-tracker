@@ -166,7 +166,7 @@ export const cs = {
     "report.currentValue": "Aktuální hodnota",
     "report.netProfit": "Čistý zisk/ztráta",
     "report.roi": "Zhodnocení",
-    "report.volatility": "Volatilita (denní)",
+    "report.volatility": "Volatilita (roční)",
     "report.volatilityDesc": "Vyšší volatilita značí agresivnější pohyby a vyšší riziko.",
     "report.recordedDeposits": "Zapsané vklady",
     "report.exchangeDiff": "Kurzovní rozdíl / Zůstatek",

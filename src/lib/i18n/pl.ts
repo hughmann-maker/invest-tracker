@@ -168,7 +168,7 @@ export const pl: Translations = {
     "report.currentValue": "Aktualna wartość",
     "report.netProfit": "Zysk/Strata netto",
     "report.roi": "Zwrot z inwestycji",
-    "report.volatility": "Zmienność (dzienna)",
+    "report.volatility": "Zmienność (roczna)",
     "report.volatilityDesc": "Większa zmienność oznacza bardziej agresywne ruchy i wyższe ryzyko.",
     "report.recordedDeposits": "Zapisane depozyty",
     "report.exchangeDiff": "Różnica kursowa / Saldo",

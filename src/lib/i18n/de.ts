@@ -168,7 +168,7 @@ export const de: Translations = {
     "report.currentValue": "Aktueller Wert",
     "report.netProfit": "Nettogewinn/-verlust",
     "report.roi": "Rendite (ROI)",
-    "report.volatility": "Volatilität (täglich)",
+    "report.volatility": "Volatilität (jährlich)",
     "report.volatilityDesc": "Hohe Volatilität zeigt aggressivere Kursbewegungen und ein höheres Risiko.",
     "report.recordedDeposits": "Eingetragene Einzahlungen",
     "report.exchangeDiff": "Kursdifferenz / Kassenbestand",

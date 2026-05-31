@@ -168,7 +168,7 @@ export const sk: Translations = {
     "report.currentValue": "Aktuálna hodnota",
     "report.netProfit": "Čistý zisk/strata",
     "report.roi": "Zhodnotenie",
-    "report.volatility": "Volatilita (denná)",
+    "report.volatility": "Volatilita (ročná)",
     "report.volatilityDesc": "Vyššia volatilita značí agresívnejšie pohyby a vyššie riziko.",
     "report.recordedDeposits": "Zapísané vklady",
     "report.exchangeDiff": "Kurzový rozdiel / Zostatok",
