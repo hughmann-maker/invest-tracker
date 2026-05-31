@@ -37,12 +37,32 @@ describe('RebalanceAlert', () => {
 
     test('renders alert with correct actions', () => {
         const actions = [
-            { ticker: 'VWCE.DE', action: 'KOUPIT', amountEur: 100 }
+            { ticker: 'VWCE.DE', action: 'KOUPIT', amountCzk: 2500 }
         ] as any;
         renderWithProviders(<RebalanceAlert isVisible={true} actions={actions} exchangeRate={25} />);
 
         expect(screen.getByText(/Nutná rebalance/i)).toBeInTheDocument();
         expect(screen.getByText('KOUPIT')).toBeInTheDocument();
         expect(screen.getByText('VWCE.DE')).toBeInTheDocument();
+    });
+
+    test('renders DRŽET (HOLD) action correctly with profit details', () => {
+        const actions = [
+            { ticker: 'SPY', action: 'DRŽET', amountCzk: 5000, profitPercent: 0.10 }
+        ] as any;
+        renderWithProviders(
+            <RebalanceAlert 
+                isVisible={true} 
+                actions={actions} 
+                exchangeRate={25} 
+                profitLockPercent={15} 
+            />
+        );
+
+        expect(screen.getByText('DRŽET')).toBeInTheDocument();
+        expect(screen.getByText('SPY')).toBeInTheDocument();
+        expect(screen.getByText(/Nad limitem, čeká na profit-lock/i)).toBeInTheDocument();
+        expect(screen.getByText(/aktuálně \+10\.0%/i)).toBeInTheDocument();
+        expect(screen.getByText(/cíl \+15%/i)).toBeInTheDocument();
     });
 });

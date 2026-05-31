@@ -7,8 +7,9 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 interface RebalanceAction {
     ticker: string;
-    action: "KOUPIT" | "PRODAT";
+    action: "KOUPIT" | "PRODAT" | "DRŽET";
     amountCzk: number;
+    profitPercent?: number | null;
 }
 
 interface RebalanceAlertProps {
@@ -20,7 +21,7 @@ interface RebalanceAlertProps {
     exchangeRatesObj?: { EUR: number, USD: number };
 }
 
-export function RebalanceAlert({ isVisible, actions = [], exchangeRate, tolerancePercent = 5, mainCurrency = "CZK", secondaryCurrency = "EUR", exchangeRatesObj }: RebalanceAlertProps & { tolerancePercent?: number }) {
+export function RebalanceAlert({ isVisible, actions = [], exchangeRate, tolerancePercent = 5, profitLockPercent = 15, mainCurrency = "CZK", secondaryCurrency = "EUR", exchangeRatesObj }: RebalanceAlertProps & { tolerancePercent?: number; profitLockPercent?: number }) {
     const { t } = useLanguage();
 
     if (!isVisible || actions.length === 0) return null;
@@ -53,20 +54,41 @@ export function RebalanceAlert({ isVisible, actions = [], exchangeRate, toleranc
                                         key={i}
                                         className="flex flex-col sm:flex-row sm:items-center justify-between rounded-xl bg-white/60 dark:bg-black/20 px-4 py-3 gap-2 border border-white/40 dark:border-white/5"
                                     >
-                                        <div className="flex items-center gap-3">
-                                            <span
-                                                className={cn(
-                                                    "font-bold uppercase tracking-wider text-xs px-2 py-0.5 rounded",
-                                                    act.action === "KOUPIT"
-                                                        ? "bg-teal-100 text-teal-700 dark:bg-teal-900/50 dark:text-teal-400"
-                                                        : "bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-400"
-                                                )}
-                                            >
-                                                {act.action === "KOUPIT" ? t("rebalance.buy") : t("rebalance.sell")}
-                                            </span>
-                                            <span className="font-medium text-amber-900 dark:text-amber-300">
-                                                {act.ticker}
-                                            </span>
+                                        <div className="flex flex-col gap-1">
+                                            <div className="flex items-center gap-3">
+                                                <span
+                                                    className={cn(
+                                                        "font-bold uppercase tracking-wider text-xs px-2 py-0.5 rounded",
+                                                        act.action === "KOUPIT"
+                                                            ? "bg-teal-100 text-teal-700 dark:bg-teal-900/50 dark:text-teal-400"
+                                                            : act.action === "PRODAT"
+                                                                ? "bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-400"
+                                                                : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800/80 dark:text-zinc-400"
+                                                    )}
+                                                >
+                                                    {act.action === "KOUPIT"
+                                                        ? t("rebalance.buy")
+                                                        : act.action === "PRODAT"
+                                                            ? t("rebalance.sell")
+                                                            : t("rebalance.hold")}
+                                                </span>
+                                                <span className="font-medium text-amber-900 dark:text-amber-300">
+                                                    {act.ticker}
+                                                </span>
+                                            </div>
+                                            {/* Profit-Lock reason for DRŽET */}
+                                            {act.action === "DRŽET" && (
+                                                <span className="text-[11px] text-zinc-500 dark:text-zinc-400 ml-0.5">
+                                                    {t("rebalance.holdReason")}
+                                                    {" · "}
+                                                    {act.profitPercent !== null && act.profitPercent !== undefined
+                                                        ? `${t("rebalance.profitCurrent")} ${act.profitPercent >= 0 ? "+" : ""}${(act.profitPercent * 100).toFixed(1)}%`
+                                                        : t("rebalance.noCostBasis")
+                                                    }
+                                                    {" · "}
+                                                    {t("rebalance.profitTarget")} +{profitLockPercent}%
+                                                </span>
+                                            )}
                                         </div>
                                         <div className="flex items-center gap-2 sm:justify-end">
                                             <span className="font-semibold text-amber-900 dark:text-amber-100 privacy-blur">

@@ -132,6 +132,13 @@ export const pl: Translations = {
     "rebalance.descAppend": "Oto propozycja transakcji w celu przywrócenia proporcji:",
     "rebalance.buy": "KUP",
     "rebalance.sell": "SPRZEDAJ",
+    "rebalance.hold": "TRZYMAJ",
+    "rebalance.holdReason": "Ponad limitem, czeka na profit-lock",
+    "rebalance.profitCurrent": "aktualnie",
+    "rebalance.profitTarget": "cel",
+    "rebalance.noCostBasis": "Brak transakcji",
+    "settings.profitLock": "Próg Profit-Lock",
+    "settings.profitLockDesc": "Min. zysk wymagany przed rebalansem (sprzedażą).",
 
     // History Chart
     "history.title": "Historia portfela",

@@ -132,6 +132,13 @@ export const sk: Translations = {
     "rebalance.descAppend": "Tu je návrh transakcií pre návrat k cieľovému rozloženiu:",
     "rebalance.buy": "KÚPIŤ",
     "rebalance.sell": "PREDAŤ",
+    "rebalance.hold": "DRŽAŤ",
+    "rebalance.holdReason": "Nad limitom, čaká na profit-lock",
+    "rebalance.profitCurrent": "aktuálne",
+    "rebalance.profitTarget": "cieľ",
+    "rebalance.noCostBasis": "Chýbajú transakcie",
+    "settings.profitLock": "Profit-Lock prah",
+    "settings.profitLockDesc": "Min. zisk aktíva pre povolenie predaja pri rebalancii.",
 
     // History Chart
     "history.title": "História portfólia",

@@ -37,9 +37,8 @@ test.describe('M6-M8 Features', () => {
         await expect(txHeading).toBeVisible();
     });
 
-    test('Auto-refresh toggle works via dropdown', async ({ page }) => {
+    test('Auto-refresh toggle works', async ({ page }) => {
         await page.goto('/');
-        await openDropdownMenu(page);
 
         const autoBtn = page.locator('button').filter({ hasText: /auto|manual/i });
         await autoBtn.first().click();

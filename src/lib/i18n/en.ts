@@ -132,6 +132,13 @@ export const en: Translations = {
     "rebalance.descAppend": "Here is a suggested plan to reach target allocation:",
     "rebalance.buy": "BUY",
     "rebalance.sell": "SELL",
+    "rebalance.hold": "HOLD",
+    "rebalance.holdReason": "Over limit, waiting for profit-lock",
+    "rebalance.profitCurrent": "current",
+    "rebalance.profitTarget": "target",
+    "rebalance.noCostBasis": "No transactions",
+    "settings.profitLock": "Profit-Lock Threshold",
+    "settings.profitLockDesc": "Min. profit required before sell rebalancing is allowed.",
 
     // History Chart
     "history.title": "Portfolio History",

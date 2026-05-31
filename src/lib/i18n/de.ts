@@ -132,6 +132,13 @@ export const de: Translations = {
     "rebalance.descAppend": "Hier ist ein Lösungsvorschlag:",
     "rebalance.buy": "KAUFEN",
     "rebalance.sell": "VERKAUFEN",
+    "rebalance.hold": "HALTEN",
+    "rebalance.holdReason": "Über Limit, wartet auf Profit-Lock",
+    "rebalance.profitCurrent": "aktuell",
+    "rebalance.profitTarget": "Ziel",
+    "rebalance.noCostBasis": "Keine Transaktionen",
+    "settings.profitLock": "Profit-Lock Schwelle",
+    "settings.profitLockDesc": "Min. Gewinn vor erlaubtem Verkauf beim Rebalancing.",
 
     // History Chart
     "history.title": "Portfolio-Verlauf",

@@ -109,6 +109,28 @@ const calculateNetInvestmentCzk = (txs: Transaction[], dateLimitTs: number, hist
   return netInvestedCzk;
 };
 
+// Pomocná funkce pro výpočet procentuálního zisku aktiva z transakčního logu
+// Porovnává aktuální cenu s průměrnou nákupní cenou (cost basis) v nativní měně aktiva.
+// Vrací null pokud nemáme BUY transakce (nelze vyhodnotit).
+const calculateAssetProfitPercent = (
+  ticker: string,
+  currentPrice: number,
+  txs: Transaction[]
+): number | null => {
+  const buys = txs.filter(t => t.ticker === ticker && t.type === "BUY");
+  if (buys.length === 0) return null;
+
+  const totalShares = buys.reduce((sum, t) => sum + t.shares, 0);
+  const totalCost = buys.reduce((sum, t) => sum + t.shares * t.pricePerShare, 0);
+
+  if (totalShares <= 0) return null;
+
+  const avgPurchasePrice = totalCost / totalShares;
+  if (avgPurchasePrice <= 0) return null;
+
+  return (currentPrice / avgPurchasePrice) - 1;
+};
+
 interface PortfolioEntry {
   id: string;
   name: string;
@@ -147,6 +169,7 @@ export default function DashboardPage() {
   // Settings
   const [dataProvider, setDataProvider] = useState<string>("yahoo");
   const [rebalanceTolerance, setRebalanceTolerance] = useState<number>(0.05);
+  const [profitLockThreshold, setProfitLockThreshold] = useState<number>(0.15);
   const [mainCurrency, setMainCurrency] = useState<"CZK" | "EUR" | "USD">("CZK");
   const [secondaryCurrency, setSecondaryCurrency] = useState<"CZK" | "EUR" | "USD">("EUR");
 
@@ -291,6 +314,12 @@ export default function DashboardPage() {
         setIsLoading(false);
       }
     }
+    // Load global settings from localStorage
+    const savedTolerance = localStorage.getItem("investice_tolerance");
+    if (savedTolerance) setRebalanceTolerance(parseFloat(savedTolerance));
+    const savedProfitLock = localStorage.getItem("investice_profit_lock");
+    if (savedProfitLock) setProfitLockThreshold(parseFloat(savedProfitLock));
+
     init();
   }, [loadPortfolioData]);
 
@@ -1135,10 +1164,33 @@ export default function DashboardPage() {
     .filter(a => Math.abs(a.targetWeight - a.actualWeight) > rebalanceTolerance)
     .map(a => {
       const diffWeight = a.targetWeight - a.actualWeight;
+
+      // Profit-Lock Rule: pokud by šlo o PRODAT, zkontroluj zisk
+      if (diffWeight < 0) {
+        const profitPct = calculateAssetProfitPercent(a.ticker, a.price, transactions);
+        // Pokud nemáme transakce NEBO zisk < práh → DRŽET
+        if (profitPct === null || profitPct < profitLockThreshold) {
+          return {
+            ticker: a.ticker,
+            action: "DRŽET" as const,
+            amountCzk: Math.abs(diffWeight) * totalValueCzk,
+            profitPercent: profitPct,
+          };
+        }
+        // Zisk >= práh → PRODAT
+        return {
+          ticker: a.ticker,
+          action: "PRODAT" as const,
+          amountCzk: Math.abs(diffWeight) * totalValueCzk,
+          profitPercent: profitPct,
+        };
+      }
+
       return {
         ticker: a.ticker,
-        action: diffWeight > 0 ? "KOUPIT" as const : "PRODAT" as const,
-        amountCzk: Math.abs(diffWeight) * totalValueCzk
+        action: "KOUPIT" as const,
+        amountCzk: Math.abs(diffWeight) * totalValueCzk,
+        profitPercent: undefined as number | null | undefined,
       };
     });
 
@@ -1193,6 +1245,11 @@ export default function DashboardPage() {
       onToleranceChange={(t) => {
         setRebalanceTolerance(t);
         localStorage.setItem("investice_tolerance", t.toString());
+      }}
+      profitLockThreshold={profitLockThreshold}
+      onProfitLockChange={(t) => {
+        setProfitLockThreshold(t);
+        localStorage.setItem("investice_profit_lock", t.toString());
       }}
       mainCurrency={mainCurrency}
       onMainCurrencyChange={(c) => {
@@ -1355,6 +1412,8 @@ export default function DashboardPage() {
         isVisible={hasRebalanceNeeds}
         actions={rebalanceActions}
         exchangeRate={exchangeRates.EUR}
+        tolerancePercent={Math.round(rebalanceTolerance * 100)}
+        profitLockPercent={Math.round(profitLockThreshold * 100)}
         mainCurrency={mainCurrency}
         secondaryCurrency={secondaryCurrency}
         exchangeRatesObj={exchangeRates}
@@ -1399,6 +1458,7 @@ export default function DashboardPage() {
           setAssets(newAssets);
         }}
         mainCurrency={mainCurrency}
+        rebalanceTolerance={rebalanceTolerance}
       />
 
       {historyData.length > 0 && (

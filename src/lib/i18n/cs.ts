@@ -130,6 +130,13 @@ export const cs = {
     "rebalance.descAppend": "Zde je návrh transakcí pro návrat k cílovému rozložení:",
     "rebalance.buy": "KOUPIT",
     "rebalance.sell": "PRODAT",
+    "rebalance.hold": "DRŽET",
+    "rebalance.holdReason": "Nad limitem, čeká na profit-lock",
+    "rebalance.profitCurrent": "aktuálně",
+    "rebalance.profitTarget": "cíl",
+    "rebalance.noCostBasis": "Chybí transakce",
+    "settings.profitLock": "Profit-Lock práh",
+    "settings.profitLockDesc": "Min. zisk aktiva pro povolení prodeje při rebalancování.",
 
     // History Chart
     "history.title": "Historie portfolia",

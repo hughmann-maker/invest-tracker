@@ -28,6 +28,7 @@ interface AssetsListProps {
     onMoveAsset: (ticker: string, direction: 'up' | 'down') => void;
     mainCurrency?: "CZK" | "EUR" | "USD";
     secondaryCurrency?: "CZK" | "EUR" | "USD";
+    rebalanceTolerance?: number;
 }
 
 function AssetSharesInput({ asset, onSharesChange }: { asset: Asset, onSharesChange: (ticker: string, shares: number) => void }) {
@@ -69,7 +70,7 @@ function AssetSharesInput({ asset, onSharesChange }: { asset: Asset, onSharesCha
     );
 }
 
-export function AssetTableRow({ asset, index, totalAssets, onSharesChange, exchangeRates, onDeleteTickerClick, onTargetWeightChange, onMoveAsset, mainCurrency = "CZK", secondaryCurrency = "EUR" }: { asset: Asset, index: number, totalAssets: number, onSharesChange: (t: string, s: number) => void, exchangeRates: { EUR: number, USD: number }, onDeleteTickerClick: (t: string) => void, onTargetWeightChange: (t: string, w: number) => void, onMoveAsset: (t: string, dir: 'up' | 'down') => void, mainCurrency?: "CZK" | "EUR" | "USD", secondaryCurrency?: "CZK" | "EUR" | "USD" }) {
+export function AssetTableRow({ asset, index, totalAssets, onSharesChange, exchangeRates, onDeleteTickerClick, onTargetWeightChange, onMoveAsset, mainCurrency = "CZK", secondaryCurrency = "EUR", rebalanceTolerance = 0.05 }: { asset: Asset, index: number, totalAssets: number, onSharesChange: (t: string, s: number) => void, exchangeRates: { EUR: number, USD: number }, onDeleteTickerClick: (t: string) => void, onTargetWeightChange: (t: string, w: number) => void, onMoveAsset: (t: string, dir: 'up' | 'down') => void, mainCurrency?: "CZK" | "EUR" | "USD", secondaryCurrency?: "CZK" | "EUR" | "USD", rebalanceTolerance?: number }) {
     const { t } = useLanguage();
 
     const formatCurrency = (val: number, currency: string) => {
@@ -97,7 +98,7 @@ export function AssetTableRow({ asset, index, totalAssets, onSharesChange, excha
     const displayPrice = mainCurrency === "CZK" ? priceCzk : mainCurrency === "EUR" ? priceCzk / exchangeRates.EUR : priceCzk / exchangeRates.USD;
     const displayValueSec = secondaryCurrency === "CZK" ? valueCzk : secondaryCurrency === "EUR" ? valueCzk / exchangeRates.EUR : valueCzk / exchangeRates.USD;
     const weightDiff = asset.actualWeight - asset.targetWeight;
-    const isOffTarget = Math.abs(weightDiff) > 0.05;
+    const isOffTarget = Math.abs(weightDiff) > rebalanceTolerance;
 
     return (
         <motion.div
@@ -221,7 +222,7 @@ export function AssetTableRow({ asset, index, totalAssets, onSharesChange, excha
     );
 }
 
-export function AssetsList({ assets, onSharesChange, exchangeRates, onAddTickerClick, onDeleteTickerClick, onTargetWeightChange, onMoveAsset, mainCurrency = "CZK", secondaryCurrency = "EUR" }: AssetsListProps) {
+export function AssetsList({ assets, onSharesChange, exchangeRates, onAddTickerClick, onDeleteTickerClick, onTargetWeightChange, onMoveAsset, mainCurrency = "CZK", secondaryCurrency = "EUR", rebalanceTolerance = 0.05 }: AssetsListProps) {
     const { t } = useLanguage();
 
     return (
@@ -282,6 +283,7 @@ export function AssetsList({ assets, onSharesChange, exchangeRates, onAddTickerC
                         onTargetWeightChange={onTargetWeightChange}
                         onMoveAsset={onMoveAsset}
                         mainCurrency={mainCurrency}
+                        rebalanceTolerance={rebalanceTolerance}
                     />
                 ))}
                 {assets.length === 0 && (

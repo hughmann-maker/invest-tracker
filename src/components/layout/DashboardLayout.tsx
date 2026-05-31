@@ -11,6 +11,8 @@ interface DashboardLayoutProps {
     onProviderChange?: (provider: string) => void;
     rebalanceTolerance?: number;
     onToleranceChange?: (tolerance: number) => void;
+    profitLockThreshold?: number;
+    onProfitLockChange?: (threshold: number) => void;
     mainCurrency?: "CZK" | "EUR" | "USD";
     onMainCurrencyChange?: (currency: "CZK" | "EUR" | "USD") => void;
     secondaryCurrency?: "CZK" | "EUR" | "USD";
@@ -19,7 +21,7 @@ interface DashboardLayoutProps {
     onViewChange?: (view: "PORTFOLIO" | "MARKET") => void;
 }
 
-export function DashboardLayout({ children, dataProvider, onProviderChange, rebalanceTolerance, onToleranceChange, mainCurrency, onMainCurrencyChange, secondaryCurrency, onSecondaryCurrencyChange, activeView = "PORTFOLIO", onViewChange }: DashboardLayoutProps) {
+export function DashboardLayout({ children, dataProvider, onProviderChange, rebalanceTolerance, onToleranceChange, profitLockThreshold, onProfitLockChange, mainCurrency, onMainCurrencyChange, secondaryCurrency, onSecondaryCurrencyChange, activeView = "PORTFOLIO", onViewChange }: DashboardLayoutProps) {
     const { language, setLanguage, t } = useLanguage();
     const [isDark, setIsDark] = useState(false);
     const [isPrivacy, setIsPrivacy] = useState(false);
@@ -269,6 +271,25 @@ export function DashboardLayout({ children, dataProvider, onProviderChange, reba
                                                 onChange={(e) => onToleranceChange(parseInt(e.target.value, 10) / 100)}
                                                 className="w-full accent-emerald-500"
                                             />
+                                        </div>
+
+                                        <div className="border-t border-zinc-200/50 dark:border-zinc-800/50 pt-3">
+                                            <label className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2">
+                                                <span>{t("settings.profitLock")}</span>
+                                                <span className="text-zinc-900 dark:text-zinc-100">{Math.round((profitLockThreshold || 0.15) * 100)} %</span>
+                                            </label>
+                                            <input
+                                                type="range"
+                                                min="5"
+                                                max="50"
+                                                step="1"
+                                                value={Math.round((profitLockThreshold || 0.15) * 100)}
+                                                onChange={(e) => onProfitLockChange && onProfitLockChange(parseInt(e.target.value, 10) / 100)}
+                                                className="w-full accent-amber-500"
+                                            />
+                                            <p className="text-[10px] text-zinc-400 dark:text-zinc-500 mt-1 leading-tight">
+                                                {t("settings.profitLockDesc")}
+                                            </p>
                                         </div>
                                     </div>
                                 )}
